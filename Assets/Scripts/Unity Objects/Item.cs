@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Item: MonoBehaviour, IHitable
 {
+    [Header("Item Attributes")]
     [SerializeField] private string itemName;
     [SerializeField] private ItemTypeEnum itemType;
     [SerializeField] private string description;
