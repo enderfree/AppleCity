@@ -3,11 +3,12 @@ using UnityEngine;
 public class Item: MonoBehaviour, IHitable
 {
     [Header("Item Attributes")]
-    [SerializeField] private string itemName;
-    [SerializeField] private ItemTypeEnum itemType;
-    [SerializeField] private string description;
-    [SerializeField] private float maxDurability;
-    [SerializeField] private float durability;
+    [SerializeField] private string _itemName;
+    [SerializeField] private ItemTypeEnum _itemType;
+    [SerializeField] private string _description;
+    [SerializeField] private float _weigth;
+    [SerializeField] private float _maxDurability;
+    [SerializeField] private float _durability;
 
     // Interface member
     // XML comment is usually directly provided in the interface itself
@@ -47,11 +48,11 @@ public class Item: MonoBehaviour, IHitable
     {
         get 
         {
-            return itemName;
+            return _itemName;
         } 
         set
         {
-            itemName = value;
+            _itemName = value;
         }
     }
 
@@ -59,11 +60,11 @@ public class Item: MonoBehaviour, IHitable
     {
         get
         {
-            return itemType;
+            return _itemType;
         }
         set
         {
-            itemType = value;
+            _itemType = value;
         }
     }
 
@@ -71,11 +72,23 @@ public class Item: MonoBehaviour, IHitable
     {
         get
         {
-            return description;
+            return _description;
         }
         set
         {
-            description = value;
+            _description = value;
+        }
+    }
+
+    public virtual float Weigth
+    {
+        get
+        {
+            return _weigth;
+        }
+        set
+        {
+            _weigth = value;
         }
     }
 
@@ -83,11 +96,11 @@ public class Item: MonoBehaviour, IHitable
     {
         get
         {
-            return maxDurability;
+            return _maxDurability;
         }
         set
         {
-            maxDurability = value;
+            _maxDurability = value;
         }
     }
 
@@ -95,11 +108,11 @@ public class Item: MonoBehaviour, IHitable
     {
         get
         {
-            return durability;
+            return _durability;
         }
         set
         {
-            durability = value;
+            _durability = value;
         }
     }
 

@@ -3,8 +3,8 @@ using UnityEngine;
 public class Apple : Item, IThrowable
 {
     [Header("Apple Attributes")]
-    [SerializeField] private AppleTypeEnum appleType;
-    [SerializeField] private float damage;
+    [SerializeField] private AppleTypeEnum _appleType;
+    [SerializeField] private float _damage;
 
     // Functions
     public virtual void ThrowItem()
@@ -22,11 +22,11 @@ public class Apple : Item, IThrowable
     {
         get 
         {
-            return appleType;
+            return _appleType;
         }
         set
         {
-            appleType = value;
+            _appleType = value;
         }
     }
 
@@ -34,11 +34,11 @@ public class Apple : Item, IThrowable
     {
         get
         {
-            return damage;
+            return _damage;
         }
         set
         {
-            damage = value;
+            _damage = value;
         }
     }
 }
