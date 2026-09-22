@@ -12,16 +12,6 @@ public class Item: MonoBehaviour, IHitable
 
     // Interface member
     // XML comment is usually directly provided in the interface itself
-    public virtual void OnBeforeSerialize()
-    {
-        // needed
-    }
-
-    public virtual void OnAfterDeserialize()
-    {
-        // needed
-    }
-
     public virtual void OnHit(float hit)
     {
         Durability -= hit;
