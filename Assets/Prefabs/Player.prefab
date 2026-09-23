@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 472757201
+  GlobalObjectIdHash: 3207395885
   InScenePlacedSourceGlobalObjectIdHash: 472757201
   DeferredDespawnTick: 0
   Ownership: 1
@@ -153,10 +153,12 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 8
   crouchSpeed: 2.5
+  targetSpeed: 4
   slideSpeed: 10
   slideDuration: 0.7
   turnSpeed: 10
   jumpHeight: 1.5
+  targetRange: 15
   animator: {fileID: 129806764273758332}
   IsCrouching:
     UpdateTraits:
@@ -164,6 +166,11 @@ MonoBehaviour:
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   IsSliding:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  IsTargeting:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
@@ -183,6 +190,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   sensitivity: 0.1
   offset: {x: 0, y: 2, z: -4}
+  targetDistance: 5
+  targetHeight: 2
+  smoothSpeed: 10
 --- !u!114 &1828308896570368536
 MonoBehaviour:
   m_ObjectHideFlags: 0
