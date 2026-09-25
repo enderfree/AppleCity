@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 public class Trolley_Script : NetworkBehaviour
 {
 
-
     //Movement Variables
     [Header("Movement")]
     [SerializeField] private float _frontWheelMultiplier = 0.6f;
@@ -23,15 +22,18 @@ public class Trolley_Script : NetworkBehaviour
     [SerializeField] private float _F_button_CT = 1f;
 
     //Object Reference
-    [Header("Object Settings")]
+    [Header("Player Settings")]
     [SerializeField] private GameObject _pilot;
     [SerializeField] private ulong? _pilotNetID;
     [SerializeField] private Trolley_PlayerInput _pilotInput;
     [SerializeField] private Player_State _pilotState;
+
+    [Header("Trolley Settings")]
+    [SerializeField]private GameObject _trolleyPrefab;
     [SerializeField] private WheelCollider _wheel_front, _wheel_back_R, _wheel_back_L;
     private Rigidbody rb;
     [SerializeField] private GameObject _interactionBox;
-    [SerializeField] private GameObject _pilotPosition;
+    [SerializeField] private Transform _pilotPosition;
 
 
     //Player Input (Adapt this into _pilot player sending input to this input)
@@ -54,7 +56,7 @@ public class Trolley_Script : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsServer) return;
+      //  if (!IsServer) return;
 
         if (_pilotInput != null) 
         {
@@ -63,14 +65,9 @@ public class Trolley_Script : NetworkBehaviour
             SendPlayerInputServerRPC(_pilotInput.readVertical, _pilotInput.readHorizon);
         }
 
-        
-         
-
     }
     private void FixedUpdate()
     {
-        
-
         CartSimulation();
     }
 
@@ -93,26 +90,9 @@ public class Trolley_Script : NetworkBehaviour
         
     }
 
-    private void TestAddPushSpeed(float addSpeed)
-    {
-        rb.AddForce(gameObject.transform.forward * addSpeed *1000 * Time.deltaTime,ForceMode.Impulse);
-    }
-
     private void AddRBSpeed(float addSpeed)
     {
         rb.AddForce(gameObject.transform.forward * _verticalInput * addSpeed * 1000 * Time.deltaTime, ForceMode.Force);
-    }
-
-    public void QuitPilot()
-    {
-      Debug.Log("Pressed F to Exit");
-      PlayerInteractExit();
-      _pilot = null;
-      _pilotNetID = null;
-      _pilotInput = null;
-      _pilotState = null;
-        
-        
     }
 
 
@@ -133,36 +113,46 @@ public class Trolley_Script : NetworkBehaviour
 
     //This only set who is controlling, don't put this on Update(), use unity event when Interact
     //Enable and Disable Interact when the player is there
-    public void PlayerInteractEnter(GameObject getPilot)
+
+
+   // [ServerRpc(RequireOwnership = false)]
+   // public void InteractServerRpc(GameObject getPilot)
+   // {
+   //     PlayerInteract(getPilot);
+  //  }
+
+
+    public void PlayerInteract(GameObject getPilot)
     {
         if (_F_button_CD == true) 
         {
-            Debug.Log("Pressed F to enter");
             FButtonCooldown();
+
             //Get pilot info to Trolley script and pilot get the seat
             GetPilotInfo(getPilot);
             _pilotState.GetTrolleyPilotPosition(_pilotPosition);
 
-            if (_pilotState.readCurrentState == Player_State.PlayerState.Normal_State)
+            if (_pilotState.readCurrentState == PlayerState.Normal_State)
             {
-             _interactionBox.SetActive(false);
-             _pilotState.PublicStateSwitch();
-             _isControlling = true;
+                Debug.Log("Pressed F to enter");
+                _interactionBox.SetActive(false);
+                _pilotState.PublicStateSwitch(PlayerState.Trolley_State);
+                _isControlling = true;
+            }
+            else 
+            {
+                Debug.Log("Pressed F to Exit");
+                _pilotState.PublicStateSwitch(PlayerState.Normal_State);
+                _isControlling = false;
+                _interactionBox.SetActive(true);
+                
+                //Clear information
+                _pilot = null;
+                _pilotNetID = null;
+                _pilotInput = null;
+                _pilotState = null;
             }
         }
-    }
-
-    private void PlayerInteractExit()
-    {
-        if (_F_button_CD == true) 
-        {
-            FButtonCooldown();
-
-            _pilotState.PublicStateSwitch();
-            _isControlling = false;
-            _interactionBox.SetActive(true);
-        }
-
     }
 
     private async void FButtonCooldown()
@@ -171,10 +161,12 @@ public class Trolley_Script : NetworkBehaviour
         await DelayActiveBox(_F_button_CT);
         _F_button_CD = true;
     }
+
     private async Task DelayActiveBox(float seconds)
     {
         await Awaitable.WaitForSecondsAsync(seconds);
     }
+
 
     public void GetPilotInfo(GameObject getPilot)
     { 
@@ -194,28 +186,6 @@ public class Trolley_Script : NetworkBehaviour
             {
                 Debug.Log("Pilot Identification failed!!! Deploy Programmer A and execute Order 67");
             }
-
-            if (_pilotInput != null)
-            {
-                _pilotInput.GetTrolleyScript(this);
-            }
-        }
-    }
-
-    // This is a input testing function for SinglePlayer
-    // Change into Camera based Forward input for any direction if time allows, steerAngle would become (rotationSteer * Input ) + CameraCenterAdjustedAngle ??
-
-    private void TestInputSimplified()
-    {
-        if (!_isControlling) return;
-
-        _verticalInput = Input.GetAxis("Vertical");
-        _horizontalInput = Input.GetAxis("Horizontal");
-
-        //This will change into a push function for all player that isn't the pilot, to help pushing depend on the direction
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TestAddPushSpeed(_pushForce);
         }
     }
 

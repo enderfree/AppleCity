@@ -1,13 +1,23 @@
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.UIElements;
 
 public class Trolley_Interact : NetworkBehaviour
 {
-    [SerializeField] private Trolley_Script _script;
+    
     [SerializeField] private GameObject _detectedPlayer;
+    private bool _havePlayer;
+    public bool _playerBool => _havePlayer;
 
-    private bool _isControlling => _script.isControl_m;
-    public GameObject _playerRef => _detectedPlayer;
+    //Trolley Ref
+
+    [SerializeField] private GameObject _trolleyPrefab;
+    [SerializeField] private Trolley_Script _trolleyScript;
+
+    //Player Ref
+    [SerializeField] private Player_State _playerState;
+
 
     // copy this block to a new script
     private void OnTriggerEnter(Collider other)
@@ -16,19 +26,31 @@ public class Trolley_Interact : NetworkBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if (!IsServer) return;
-        if (!other.gameObject.CompareTag("Player")) return;
-        if (_isControlling) return;
+        if (other.gameObject.CompareTag("Player") && _detectedPlayer != null)
+        {
+            _havePlayer = true;
 
-        //Press F to Enter pilot mode
-        if (Input.GetKeyUp(KeyCode.F))
-        {   
-            _script.PlayerInteractEnter(_detectedPlayer);
+            if (_detectedPlayer.TryGetComponent<Player_State>(out Player_State script))
+            {
+                _playerState = script;
+            }
+
+            if (_playerState != null)
+            {
+                _playerState.GetTrolleyRef(_trolleyPrefab, _trolleyScript);
+            }
         }
+        else
+        {
+            _havePlayer = false;
+
+        } 
     }
 
     private void OnTriggerExit(Collider other)
     {
         _detectedPlayer = null;
     }
+
+
 }

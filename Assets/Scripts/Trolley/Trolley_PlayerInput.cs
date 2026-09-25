@@ -17,30 +17,15 @@ public class Trolley_PlayerInput : NetworkBehaviour
         PlayerInput();
     }
 
-    private void OnEnable()
-    {
-        
-    }
-
-    private void OnDisable()
-    {
-        _trolleyScript = null;
-    }
     private void PlayerInput()
     {
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
         _trolleyScript.SendPlayerInputServerRPC(_verticalInput, _horizontalInput);
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Debug.Log("Pressed F trying to Exit");
-            _trolleyScript.QuitPilot();
-        }
     }
 
     public void GetTrolleyScript(Trolley_Script script)
-    { 
-      _trolleyScript = script;
+    {
+        _trolleyScript = script;
     }
 }

@@ -2,10 +2,11 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+public enum PlayerState { Normal_State, Trolley_State }
 public class Player_State : NetworkBehaviour
 {
     //State of the player
-    public enum PlayerState {Normal_State, Trolley_State }
+    
     [SerializeField] private PlayerState _currentState;
     public PlayerState readCurrentState => _currentState;
 
@@ -15,7 +16,12 @@ public class Player_State : NetworkBehaviour
     [SerializeField] private Trolley_PlayerInput _trolleyInput;
 
     //Trolley object ref
-    [SerializeField] private GameObject _pilotPosition;
+    [SerializeField] private GameObject _trolleyPrefab;
+    [SerializeField] private Trolley_Script _trolleyScript;
+    [SerializeField] private Trolley_Interact _interact;
+    private bool _canInteracting => _interact._playerBool ;
+    [SerializeField] private Transform _pilotPosition;
+
 
     private void Awake()
     {
@@ -23,7 +29,14 @@ public class Player_State : NetworkBehaviour
         _trolleyInput = GetComponent<Trolley_PlayerInput>();
 
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Debug.Log("Pressed F");
+            _trolleyScript.PlayerInteract(_playerPrefab);
+        }
+    }
     private void LateUpdate()
     {
         if (_currentState == PlayerState.Trolley_State  && _pilotPosition != null)
@@ -46,14 +59,12 @@ public class Player_State : NetworkBehaviour
         {
             case PlayerState.Normal_State: PlayerNormalState(); break;
             case PlayerState.Trolley_State: PlayerTrolleyState(); break;
-
         }
     }
     //Public of TransitionTo
-    public void PublicStateSwitch()
+    public void PublicStateSwitch(PlayerState next)
     {
-        if (_currentState == PlayerState.Normal_State) TransitionTo(PlayerState.Trolley_State);
-        else TransitionTo(PlayerState.Normal_State);
+        TransitionTo(next);
     }
     
     private void PlayerNormalState() 
@@ -66,6 +77,7 @@ public class Player_State : NetworkBehaviour
         if (_pilotPosition != null)
         {
             _pilotPosition = null;
+            _trolleyPrefab = null;
         }
         
     }
@@ -73,39 +85,32 @@ public class Player_State : NetworkBehaviour
     //In this state, player should snap on the Trolley/pilot position while controlling the trolley and is not moving on its own
     //ideally put the specific player prefab as a child of the trolley and undo it when the player is no longer controlling
 
-    //Network object cannot be child of a non network object... snap position for now
     private void PlayerTrolleyState() 
     {
         _movementScript.enabled = false;
         _trolleyInput.enabled = true;
-        //Snap player to position and set its local position to 0,0,0
+        _trolleyInput.GetTrolleyScript(_trolleyScript);
 
-
+        //Set the player as Trolley child and pilotPosition.
         if (_pilotPosition != null)
         {
-
-            _playerPrefab.transform.position = _pilotPosition.transform.position;
-            
-           // _playerPrefab.transform.SetParent(_pilotPosition.transform);
-           // _playerPrefab.transform.localPosition = Vector3.zero;
+            _playerPrefab.transform.SetParent(_trolleyPrefab.transform);
+            _playerPrefab.transform.localPosition = _pilotPosition.position;
         }
     }
 
-    public void GetTrolleyPilotPosition(GameObject position)
+    public void GetTrolleyPilotPosition(Transform position)
     {
         _pilotPosition = position;
     }
 
+    public void GetTrolleyRef(GameObject prefab, Trolley_Script script)
+    {
+        _trolleyPrefab = prefab ;
+        _trolleyScript = script;
+    }
 
 
-    //Debug list
-
-    [ContextMenu("Debug: SwitchState")]
-    public void Debug_StateSwitching() => PublicStateSwitch();
-    [ContextMenu("Debug: Move")]
-    public void Debug_DisableMovement() => _movementScript.enabled = false;
-    [ContextMenu("Debug: Trolley")]
-    public void Debug_DisableTrolleyInput() => _trolleyInput.enabled = true;
 
 
 

@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3053594609
+  GlobalObjectIdHash: 2753295616
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -253,20 +253,21 @@ MonoBehaviour:
   _frontWheelMultiplier: 0.6
   _backWheelMultiplier: 1.5
   _motorSpeed: 120
-  _rbSpeed: 150
+  _rbSpeed: 250
   _pushForce: 100
-  _rotationSteer: 30
+  _rotationSteer: 45
   _isControlling: 0
   _F_button_CD: 0
   _F_button_CT: 1
   _pilot: {fileID: 0}
   _pilotInput: {fileID: 0}
   _pilotState: {fileID: 0}
+  _trolleyPrefab: {fileID: 0}
   _wheel_front: {fileID: 500289291724188460}
   _wheel_back_R: {fileID: 2245940398622408318}
   _wheel_back_L: {fileID: 2353502846218273594}
   _interactionBox: {fileID: 9018591771265777720}
-  _pilotPosition: {fileID: 7814233941764117486}
+  _pilotPosition: {fileID: 3092687767507313562}
   _horizontalInput: 0
   _verticalInput: 0
 --- !u!1 &110637617883712123
@@ -1783,8 +1784,8 @@ Transform:
   m_GameObject: {fileID: 9018591771265777720}
   serializedVersion: 2
   m_LocalRotation: {x: 0.012244454, y: 0.7058774, z: -0.010559008, w: 0.70814943}
-  m_LocalPosition: {x: 0.006, y: 0.001, z: -0.966}
-  m_LocalScale: {x: 1.1853979, y: 2.2110655, z: 1.3281163}
+  m_LocalPosition: {x: 0.01, y: 0, z: -1.122}
+  m_LocalScale: {x: 1.3924869, y: 2.2110655, z: 1.7848555}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2458068850140913402}
@@ -1831,5 +1832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Trolley_Interact
   ShowTopMostFoldoutHeaderGroup: 1
-  _script: {fileID: 5906565843007496289}
   _detectedPlayer: {fileID: 0}
+  _trolleyPrefab: {fileID: 25329991042439877}
+  _trolleyScript: {fileID: 5906565843007496289}
+  _playerState: {fileID: 0}
