@@ -293071,6 +293071,14 @@ PrefabInstance:
       propertyPath: m_Speed
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 2065350936110729521, guid: c2e110b0bab74dd478e1b99944be639a, type: 3}
+      propertyPath: m_Height
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2065350936110729521, guid: c2e110b0bab74dd478e1b99944be639a, type: 3}
+      propertyPath: m_Radius
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 3565589553953727284, guid: c2e110b0bab74dd478e1b99944be639a, type: 3}
       propertyPath: _agent
       value: 
