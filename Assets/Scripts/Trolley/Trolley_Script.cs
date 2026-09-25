@@ -62,7 +62,7 @@ public class Trolley_Script : NetworkBehaviour
         {
             _horizontalInput = _pilotInput.readHorizon;
             _verticalInput = _pilotInput.readVertical;
-            SendPlayerInputServerRPC(_pilotInput.readVertical, _pilotInput.readHorizon);
+          //  SendPlayerInputServerRPC(_pilotInput.readVertical, _pilotInput.readHorizon);
         }
 
     }
@@ -96,30 +96,33 @@ public class Trolley_Script : NetworkBehaviour
     }
 
 
-    [ServerRpc]
-    public void SendPlayerInputServerRPC(float verticalInput,float horizontalInput, ServerRpcParams rpcParams = default)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SendPlayerInputRpc(float verticalInput,float horizontalInput,RpcParams rpcParams = default)
     {
-        ulong detectedPilot = rpcParams.Receive.SenderClientId;
+        ulong senderId = rpcParams.Receive.SenderClientId;
 
-        if (_pilotNetID == detectedPilot)
-        {
-            _verticalInput = verticalInput;
-            _horizontalInput = horizontalInput;
-        }
+        if (!_isControlling) return;
 
+        if (_pilotNetID != senderId) return;
+
+        _verticalInput = verticalInput;
+        _horizontalInput = horizontalInput;
     }
 
-    //Pilot is the main player that is currently controlling the Trolley 
 
-    //This only set who is controlling, don't put this on Update(), use unity event when Interact
-    //Enable and Disable Interact when the player is there
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void InteractRpc(RpcParams rpcParams = default)
+    {
+        ulong senderId = rpcParams.Receive.SenderClientId;
+
+        if (_isControlling) return;
+        if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(senderId, out var client)) return;
+
+        GameObject getPilot = client.PlayerObject.gameObject;
 
 
-   // [ServerRpc(RequireOwnership = false)]
-   // public void InteractServerRpc(GameObject getPilot)
-   // {
-   //     PlayerInteract(getPilot);
-  //  }
+        PlayerInteract(getPilot);
+    }
 
 
     public void PlayerInteract(GameObject getPilot)
