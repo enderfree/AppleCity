@@ -79,7 +79,7 @@ public class SimplePlayerMovement : NetworkBehaviour
 
         Vector2 input = Vector2.zero;
 
-        if (!isLanding && !IsSliding.Value)
+        if (!IsSliding.Value)
         {
             if (Keyboard.current.wKey.isPressed) input.y += 1;
             if (Keyboard.current.sKey.isPressed) input.y -= 1;
