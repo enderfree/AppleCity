@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8012043324494663718}
   - component: {fileID: 5553602155688643940}
   - component: {fileID: 7890663317451580301}
+  - component: {fileID: 1506229936371202232}
   - component: {fileID: 5906565843007496289}
   m_Layer: 0
   m_Name: Trolley_Test
@@ -145,6 +146,32 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1506229936371202232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25329991042439877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2070316096
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &5906565843007496289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,6 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c056a289a7ac0d4bbe45e52d1a12271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Trolley_Script
+  ShowTopMostFoldoutHeaderGroup: 1
   _frontWheelMultiplier: 0.6
   _backWheelMultiplier: 1.5
   _motorSpeed: 120
@@ -164,10 +192,14 @@ MonoBehaviour:
   _pushForce: 200
   _rotationSteer: 20
   _pilot: {fileID: 0}
+  _playerInput: {fileID: 0}
   _isControlling: 0
   _wheel_front: {fileID: 500289291724188460}
   _wheel_back_R: {fileID: 2245940398622408318}
   _wheel_back_L: {fileID: 2353502846218273594}
+  _interactionArea: {fileID: 0}
+  _horizontalInput: 0
+  _verticalInput: 0
 --- !u!1 &110637617883712123
 GameObject:
   m_ObjectHideFlags: 0
