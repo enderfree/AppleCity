@@ -14,6 +14,11 @@ public class Character: MonoBehaviour, IHitable
     public virtual void OnHit(float damage)
     {
         HP -= damage;
+
+        if (HP <= 0f)
+        {
+            Debug.Log("We should implement a gameover screen");
+        }
     }
 
     // Getters and Setters

@@ -13,7 +13,7 @@ public class Chaser: NPC
         if (Target == null || Vector3.Distance(transform.position, Target.position) > PursuitRange)
         {
             Transform newTarget = null;
-
+            
             foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
             {
                 if (newTarget == null || 
@@ -22,11 +22,24 @@ public class Chaser: NPC
                     newTarget = player.transform;
                 }
             }
+
+            Target = newTarget;
         }
 
         if (Target != null)
         {
             Agent.SetDestination(Target.position);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (collision.gameObject.TryGetComponent<IHitable>(out IHitable hitable))
+            {
+                hitable.OnHit(ContactDamage);
+            }
         }
     }
 
