@@ -21,7 +21,7 @@ public class Trolley_PlayerInput : NetworkBehaviour
     {
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
-        _trolleyScript.SendPlayerInputServerRPC(_verticalInput, _horizontalInput);
+        _trolleyScript.SendPlayerInputRpc(_verticalInput, _horizontalInput);
     }
 
     public void GetTrolleyScript(Trolley_Script script)

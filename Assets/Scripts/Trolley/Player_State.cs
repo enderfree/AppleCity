@@ -14,12 +14,13 @@ public class Player_State : NetworkBehaviour
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private SimplePlayerMovement _movementScript;
     [SerializeField] private Trolley_PlayerInput _trolleyInput;
+    private NetworkObject _playerNetworkObject;
 
     //Trolley object ref
     [SerializeField] private GameObject _trolleyPrefab;
     [SerializeField] private Trolley_Script _trolleyScript;
     [SerializeField] private Trolley_Interact _interact;
-    private bool _canInteracting => _interact._playerBool ;
+
     [SerializeField] private Transform _pilotPosition;
 
 
@@ -27,23 +28,22 @@ public class Player_State : NetworkBehaviour
     {
        _movementScript = GetComponent<SimplePlayerMovement>();
         _trolleyInput = GetComponent<Trolley_PlayerInput>();
-
+        _playerNetworkObject = GetComponent<NetworkObject>();
     }
+
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("Pressed F");
+            if(_trolleyScript != null)
             _trolleyScript.PlayerInteract(_playerPrefab);
         }
+
+        InteractReset();
     }
-    private void LateUpdate()
-    {
-        if (_currentState == PlayerState.Trolley_State  && _pilotPosition != null)
-        {
-            _playerPrefab.transform.position = _pilotPosition.transform.position;
-        }
-    }
+
 
 
     public override void OnNetworkSpawn()
@@ -95,7 +95,7 @@ public class Player_State : NetworkBehaviour
         if (_pilotPosition != null)
         {
             _playerPrefab.transform.SetParent(_trolleyPrefab.transform);
-            _playerPrefab.transform.localPosition = _pilotPosition.position;
+            _playerPrefab.transform.position = _pilotPosition.transform.position;
         }
     }
 
@@ -104,14 +104,22 @@ public class Player_State : NetworkBehaviour
         _pilotPosition = position;
     }
 
-    public void GetTrolleyRef(GameObject prefab, Trolley_Script script)
+    public void GetTrolleyRef(GameObject prefab, Trolley_Script script, Trolley_Interact interact)
     {
         _trolleyPrefab = prefab ;
         _trolleyScript = script;
+        _interact = interact;
     }
 
-
-
-
+    public void InteractReset()
+    {
+        if(_interact != null) {
+            if (_interact._playerBool == false)
+            {
+              //  GetTrolleyRef(null, null, null);
+            }
+        }
+        
+    }
 
 }

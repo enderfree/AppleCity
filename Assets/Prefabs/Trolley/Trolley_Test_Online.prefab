@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2753295616
+  GlobalObjectIdHash: 3053594609
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -262,7 +262,7 @@ MonoBehaviour:
   _pilot: {fileID: 0}
   _pilotInput: {fileID: 0}
   _pilotState: {fileID: 0}
-  _trolleyPrefab: {fileID: 0}
+  _trolleyPrefab: {fileID: 25329991042439877}
   _wheel_front: {fileID: 500289291724188460}
   _wheel_back_R: {fileID: 2245940398622408318}
   _wheel_back_L: {fileID: 2353502846218273594}

@@ -20,6 +20,14 @@ public class Trolley_Interact : NetworkBehaviour
 
 
     // copy this block to a new script
+
+    private void FixedUpdate()
+    {
+        if (_detectedPlayer == null && _playerState !=null)
+        {
+            _playerState.GetTrolleyRef(null, null, null);
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         _detectedPlayer = other.gameObject;
@@ -37,7 +45,7 @@ public class Trolley_Interact : NetworkBehaviour
 
             if (_playerState != null)
             {
-                _playerState.GetTrolleyRef(_trolleyPrefab, _trolleyScript);
+                _playerState.GetTrolleyRef(_trolleyPrefab, _trolleyScript, this);
             }
         }
         else
