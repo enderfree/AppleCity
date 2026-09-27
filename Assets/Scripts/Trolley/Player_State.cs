@@ -92,7 +92,7 @@ public class Player_State : NetworkBehaviour
         _trolleyInput.GetTrolleyScript(_trolleyScript);
 
         //Set the player as Trolley child and pilotPosition.
-        if (_pilotPosition != null)
+        if (_pilotPosition != null && _trolleyPrefab != null)
         {
             _playerPrefab.transform.SetParent(_trolleyPrefab.transform);
             _playerPrefab.transform.position = _pilotPosition.transform.position;
