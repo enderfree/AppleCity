@@ -14,7 +14,8 @@ public class Player_State : NetworkBehaviour
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private SimplePlayerMovement _movementScript;
     [SerializeField] private Trolley_PlayerInput _trolleyInput;
-    private NetworkObject _playerNetworkObject;
+    [SerializeField] private NetworkObject _playerNetworkObject;
+    private CharacterController _cc;
 
     //Trolley object ref
     [SerializeField] private GameObject _trolleyPrefab;
@@ -28,20 +29,23 @@ public class Player_State : NetworkBehaviour
     {
        _movementScript = GetComponent<SimplePlayerMovement>();
         _trolleyInput = GetComponent<Trolley_PlayerInput>();
+        _cc = GetComponent<CharacterController>();
         _playerNetworkObject = GetComponent<NetworkObject>();
     }
 
 
     private void Update()
     {
+        if (!IsOwner) return;
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("Pressed F");
             if(_trolleyScript != null)
-            _trolleyScript.PlayerInteract(_playerPrefab);
+            _trolleyScript.InteractRpc();
         }
 
-        InteractReset();
+        
     }
 
 
@@ -62,17 +66,32 @@ public class Player_State : NetworkBehaviour
         }
     }
     //Public of TransitionTo
+
+
     public void PublicStateSwitch(PlayerState next)
+    {
+        //Odd repetition, but somehow it fixes some ownership issue, check this issue when I have more time
+        TransitionTo(next);
+        SetPlayerStateRpc(next);
+    }
+
+    [Rpc(SendTo.Owner)]
+    private void SetPlayerStateRpc(PlayerState next)
     {
         TransitionTo(next);
     }
-    
+
     private void PlayerNormalState() 
     {
+        CC_State(true);
         _movementScript.enabled = true;
         _trolleyInput.enabled = false;
+        
         //Undo Parenting when return to Normal State
-        _playerPrefab.transform.SetParent(null);
+        if (IsServer)
+        {
+            _playerNetworkObject.TryRemoveParent(true);
+        }
         //Clear out pilotPosition reference
         if (_pilotPosition != null)
         {
@@ -87,6 +106,7 @@ public class Player_State : NetworkBehaviour
 
     private void PlayerTrolleyState() 
     {
+        CC_State(false);
         _movementScript.enabled = false;
         _trolleyInput.enabled = true;
         _trolleyInput.GetTrolleyScript(_trolleyScript);
@@ -94,32 +114,39 @@ public class Player_State : NetworkBehaviour
         //Set the player as Trolley child and pilotPosition.
         if (_pilotPosition != null && _trolleyPrefab != null)
         {
-            _playerPrefab.transform.SetParent(_trolleyPrefab.transform);
-            _playerPrefab.transform.position = _pilotPosition.transform.position;
+            if (IsServer)
+            {
+                NetworkObject trolleyNet =_trolleyPrefab.GetComponent<NetworkObject>();
+
+                _playerNetworkObject.TrySetParent(trolleyNet, true);
+                
+            }
+
+            PilotOnPosition();
         }
     }
 
-    public void GetTrolleyPilotPosition(Transform position)
+    private void PilotOnPosition()
     {
-        _pilotPosition = position;
+        _playerPrefab.transform.position = _pilotPosition.position;
+        _playerPrefab.transform.rotation = _pilotPosition.rotation;
+
     }
 
-    public void GetTrolleyRef(GameObject prefab, Trolley_Script script, Trolley_Interact interact)
+    //Character controller is causing a really weird player collision teleport bug on the server while driving the trolley, disabling it is a quick fix
+    private void CC_State(bool newBool)
+    {
+        _cc.enabled = newBool; 
+    }
+
+    public void GetTrolleyRef(GameObject prefab, Trolley_Script script, Trolley_Interact interact, Transform position)
     {
         _trolleyPrefab = prefab ;
         _trolleyScript = script;
         _interact = interact;
+        _pilotPosition = position;
     }
 
-    public void InteractReset()
-    {
-        if(_interact != null) {
-            if (_interact._playerBool == false)
-            {
-              //  GetTrolleyRef(null, null, null);
-            }
-        }
-        
-    }
+  
 
 }

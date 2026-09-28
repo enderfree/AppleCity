@@ -19,6 +19,8 @@ public class Trolley_PlayerInput : NetworkBehaviour
 
     private void PlayerInput()
     {
+        if (!IsOwner) return;
+
         _horizontalInput = Input.GetAxis("Horizontal");
         _verticalInput = Input.GetAxis("Vertical");
         _trolleyScript.SendPlayerInputRpc(_verticalInput, _horizontalInput);

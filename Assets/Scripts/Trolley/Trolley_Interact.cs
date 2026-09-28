@@ -2,6 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UIElements;
+using System.Threading.Tasks;
 
 public class Trolley_Interact : NetworkBehaviour
 {
@@ -14,6 +15,7 @@ public class Trolley_Interact : NetworkBehaviour
 
     [SerializeField] private GameObject _trolleyPrefab;
     [SerializeField] private Trolley_Script _trolleyScript;
+    [SerializeField] private Transform _pilotPosition;
 
     //Player Ref
     [SerializeField] private Player_State _playerState;
@@ -23,10 +25,7 @@ public class Trolley_Interact : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (_detectedPlayer == null && _playerState !=null)
-        {
-            _playerState.GetTrolleyRef(null, null, null);
-        }
+        DelayClearInfo();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -45,7 +44,7 @@ public class Trolley_Interact : NetworkBehaviour
 
             if (_playerState != null)
             {
-                _playerState.GetTrolleyRef(_trolleyPrefab, _trolleyScript, this);
+                _playerState.GetTrolleyRef(_trolleyPrefab, _trolleyScript, this, _pilotPosition);
             }
         }
         else
@@ -58,6 +57,17 @@ public class Trolley_Interact : NetworkBehaviour
     private void OnTriggerExit(Collider other)
     {
         _detectedPlayer = null;
+    }
+
+    private void DelayClearInfo()
+    {
+        if (_detectedPlayer == null && _playerState != null)
+        {
+            
+            if (_playerState.readCurrentState == PlayerState.Normal_State)
+           
+               _playerState.GetTrolleyRef(null, null, null, null);
+        }
     }
 
 

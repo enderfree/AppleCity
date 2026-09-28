@@ -17,7 +17,7 @@ public class Trolley_Script : NetworkBehaviour
     [SerializeField] private float _rotationSteer = 20f;
 
     //Bools
-    [SerializeField] private bool _isControlling;
+    
     [SerializeField] private bool _F_button_CD = true;
     [SerializeField] private float _F_button_CT = 1f;
 
@@ -33,14 +33,15 @@ public class Trolley_Script : NetworkBehaviour
     [SerializeField] private WheelCollider _wheel_front, _wheel_back_R, _wheel_back_L;
     private Rigidbody rb;
     [SerializeField] private GameObject _interactionBox;
-    [SerializeField] private Transform _pilotPosition;
+    
 
 
     //Player Input (Adapt this into _pilot player sending input to this input)
     [SerializeField] private float _horizontalInput, _verticalInput;
 
-    //Ref
-    public bool isControl_m => _isControlling;
+    //Online Variable
+    [SerializeField] private NetworkVariable<bool> _isControlling = new NetworkVariable<bool>(false);
+
 
 
     private void Awake()
@@ -51,19 +52,21 @@ public class Trolley_Script : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _F_button_CD = true;
+
+        if (IsServer) _isControlling.Value = false;
+
+        InteractionBoxState(_isControlling.Value);
+        _isControlling.OnValueChanged += OnInteractChanged;
+        
+
     }
-    //public override void OnNetworkDespawn()
+    public override void OnNetworkDespawn()
+    {
+        _isControlling.OnValueChanged -= OnInteractChanged;
+    }
 
     private void Update()
     {
-      //  if (!IsServer) return;
-
-        if (_pilotInput != null) 
-        {
-            _horizontalInput = _pilotInput.readHorizon;
-            _verticalInput = _pilotInput.readVertical;
-          //  SendPlayerInputServerRPC(_pilotInput.readVertical, _pilotInput.readHorizon);
-        }
 
     }
     private void FixedUpdate()
@@ -73,8 +76,6 @@ public class Trolley_Script : NetworkBehaviour
 
     private void CartSimulation()
     {
-        if (!_isControlling) return;
-
         //Read input
         float motor = (_verticalInput * _motorSpeed);
 
@@ -99,11 +100,9 @@ public class Trolley_Script : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void SendPlayerInputRpc(float verticalInput,float horizontalInput,RpcParams rpcParams = default)
     {
-        ulong senderId = rpcParams.Receive.SenderClientId;
+        ulong newPilotId = rpcParams.Receive.SenderClientId;
 
-        if (!_isControlling) return;
-
-        if (_pilotNetID != senderId) return;
+        if (_pilotNetID != newPilotId) return;
 
         _verticalInput = verticalInput;
         _horizontalInput = horizontalInput;
@@ -115,7 +114,7 @@ public class Trolley_Script : NetworkBehaviour
     {
         ulong senderId = rpcParams.Receive.SenderClientId;
 
-        if (_isControlling) return;
+        
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(senderId, out var client)) return;
 
         GameObject getPilot = client.PlayerObject.gameObject;
@@ -133,21 +132,23 @@ public class Trolley_Script : NetworkBehaviour
 
             //Get pilot info to Trolley script and pilot get the seat
             GetPilotInfo(getPilot);
-            _pilotState.GetTrolleyPilotPosition(_pilotPosition);
+            
 
             if (_pilotState.readCurrentState == PlayerState.Normal_State)
             {
                 Debug.Log("Pressed F to enter");
-                _interactionBox.SetActive(false);
+
+                _isControlling.Value = true;
+
                 _pilotState.PublicStateSwitch(PlayerState.Trolley_State);
-                _isControlling = true;
+           
             }
             else 
             {
                 Debug.Log("Pressed F to Exit");
                 _pilotState.PublicStateSwitch(PlayerState.Normal_State);
-                _isControlling = false;
-                _interactionBox.SetActive(true);
+
+                _isControlling.Value = false;
                 
                 //Clear information
                 _pilot = null;
@@ -191,5 +192,36 @@ public class Trolley_Script : NetworkBehaviour
             }
         }
     }
+
+
+    //Sync the Interaction box to all client
+
+
+    private void InteractionBoxState(bool newBool)
+    {
+        _interactionBox.SetActive(!newBool);
+    }
+
+    private void OnInteractChanged(bool oldBool, bool newBool)
+    {
+        InteractionBoxState(newBool);
+    }
+
+    //Debug
+
+    [ContextMenu("Debug: IsControlling On")]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void DebugBoolOnServerRPC() {
+
+        _isControlling.Value = true;
+    }
+
+    [ContextMenu("Debug: IsControlling Off")]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void DebugBoolOffServerRPC() 
+    {
+
+        _isControlling.Value = false;
+    } 
 
 }
