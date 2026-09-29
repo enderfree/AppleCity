@@ -2,7 +2,11 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public enum PlayerState { Normal_State, Trolley_State }
+public enum PlayerState
+{
+    Normal_State,
+    Trolley_State 
+}
 public class Player_State : NetworkBehaviour
 {
     //State of the player

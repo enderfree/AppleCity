@@ -65,10 +65,7 @@ public class Trolley_Script : NetworkBehaviour
         _isControlling.OnValueChanged -= OnInteractChanged;
     }
 
-    private void Update()
-    {
 
-    }
     private void FixedUpdate()
     {
         CartSimulation();
@@ -211,7 +208,8 @@ public class Trolley_Script : NetworkBehaviour
 
     [ContextMenu("Debug: IsControlling On")]
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void DebugBoolOnServerRPC() {
+    public void DebugBoolOnServerRPC() 
+    {
 
         _isControlling.Value = true;
     }
