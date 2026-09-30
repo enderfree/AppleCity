@@ -6,10 +6,10 @@ public class SettingManager : MonoBehaviour
 
     private void Awake()
     {
-        SingletonObject();
+        IsSingletonComponent();
     }
 
-    private void SingletonObject()
+    private void IsSingletonComponent()
     {
         // Keep the first GameManager alive and destroy the object whenever there is a second one
         if (Instance != null && Instance != this)

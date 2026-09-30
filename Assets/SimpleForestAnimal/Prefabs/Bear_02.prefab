@@ -221,6 +221,7 @@ Transform:
   - {fileID: 425886}
   - {fileID: 403178}
   - {fileID: 457048}
+  - {fileID: 1351769597465105913}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &9521838
@@ -430,3 +431,107 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000000011175871, y: -0.054676313, z: 0.19332728}
     m_Extent: {x: 0.097245365, y: 0.17861189, z: 0.25050876}
   m_DirtyAABB: 0
+--- !u!1001 &1351769597464973177
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 490802}
+    m_Modifications:
+    - target: {fileID: 100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_Name
+      value: Bear
+      objectReference: {fileID: 0}
+    - target: {fileID: 100094, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100096, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100098, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.304
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2457836640188320058}
+  m_SourcePrefab: {fileID: 100100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+--- !u!1 &1351769597465004505 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+  m_PrefabInstance: {fileID: 1351769597464973177}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2457836640188320058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351769597465004505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b65dee2c4dc8584482311b823236a78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chaser
+  _charName: Bear
+  _maxHP: 50
+  _hp: 50
+  _weightCapacity: 500
+  _carriedWeight: 0
+  _npcState: 2
+  _target: {fileID: 0}
+  _agent: {fileID: 2065350936110729521}
+  _contactDamage: 5
+  _pursuitRange: 200
+--- !u!4 &1351769597465105913 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+  m_PrefabInstance: {fileID: 1351769597464973177}
+  m_PrefabAsset: {fileID: 0}
