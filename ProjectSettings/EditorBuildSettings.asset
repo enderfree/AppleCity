@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 910f43bc41961c947bdd7a46ad0fb10c
+  - enabled: 1
     path: Assets/Scenes/AppleCity.unity
     guid: 06dd59a2946804b4eb6415be49512a40
   - enabled: 1
