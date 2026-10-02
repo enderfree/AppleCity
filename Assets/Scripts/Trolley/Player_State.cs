@@ -57,6 +57,7 @@ public class Player_State : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         TransitionTo(PlayerState.Normal_State);
+        UiManager.Instance.PlayerInitiateUI();
     }
     //State define whenever player is controlling the character or the trolley or else
     private void TransitionTo(PlayerState next)

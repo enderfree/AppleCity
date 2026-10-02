@@ -15,7 +15,7 @@ public class SimplePlayerMovement : NetworkBehaviour
     [SerializeField] private float turnSpeed = 10f;
     [SerializeField] private float jumpHeight = 1.5f;
 
-    [SerializeField] private float targetRange = 15f;
+    
 
     [SerializeField] private Animator animator;
 
@@ -68,14 +68,14 @@ public class SimplePlayerMovement : NetworkBehaviour
             !isLanding &&
             !IsSliding.Value)
         {
-            if (IsTargeting.Value)
-                StopTargeting();
-            else
-                FindTarget();
+            if (IsTargeting.Value) { }
+            //  StopTargeting();
+            else { }
+              //  FindTarget();
         }
 
         if (IsTargeting.Value && Target == null)
-            StopTargeting();
+        { } //StopTargeting();
 
         Vector2 input = Vector2.zero;
 
@@ -250,40 +250,5 @@ public class SimplePlayerMovement : NetworkBehaviour
         );
     }
 
-    private void FindTarget()
-    {
-        GameObject[] enemies =
-            GameObject.FindGameObjectsWithTag("Enemy");
 
-        float closestDistance = targetRange;
-        Transform closestTarget = null;
-
-        foreach (GameObject enemy in enemies)
-        {
-            float distance =
-                Vector3.Distance(
-                    transform.position,
-                    enemy.transform.position
-                );
-
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestTarget = enemy.transform;
-            }
-        }
-
-        if (closestTarget == null)
-            return;
-
-        Target = closestTarget;
-
-        IsTargeting.Value = true;
-    }
-
-    private void StopTargeting()
-    {
-        Target = null;
-        IsTargeting.Value = false;
-    }
 }

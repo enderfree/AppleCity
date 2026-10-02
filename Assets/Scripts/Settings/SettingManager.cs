@@ -20,4 +20,9 @@ public class SettingManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+    private void MousePointer()
+    { 
+           
+    }
 }

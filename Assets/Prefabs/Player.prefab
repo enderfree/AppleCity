@@ -15,11 +15,12 @@ GameObject:
   - component: {fileID: -7936782681767733980}
   - component: {fileID: 4691049962705353319}
   - component: {fileID: 6414669962989271884}
-  - component: {fileID: 1810393186364334324}
+  - component: {fileID: -5146531129236005318}
   - component: {fileID: 1828308896570368536}
   - component: {fileID: 495829295415285609}
   - component: {fileID: 4529441181639694979}
   - component: {fileID: 856478279412836305}
+  - component: {fileID: 1178955826480325783}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -80,7 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3207395885
+  GlobalObjectIdHash: 472757201
   InScenePlacedSourceGlobalObjectIdHash: 472757201
   DeferredDespawnTick: 0
   Ownership: 1
@@ -174,6 +175,7 @@ MonoBehaviour:
   _playerPrefab: {fileID: 2107980596810229147}
   _movementScript: {fileID: 6414669962989271884}
   _trolleyInput: {fileID: 856478279412836305}
+  _playerNetworkObject: {fileID: 0}
   _trolleyPrefab: {fileID: 0}
   _trolleyScript: {fileID: 0}
   _interact: {fileID: 0}
@@ -216,7 +218,7 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
---- !u!114 &1810393186364334324
+--- !u!114 &-5146531129236005318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -225,9 +227,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2107980596810229147}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3164008b36bfa7548b7f681023c2296a, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c2e6ee719fd55a4d8da2b527e7b1bc1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::TPSPlayerCamera
   ShowTopMostFoldoutHeaderGroup: 1
   sensitivity: 0.1
   offset: {x: 0, y: 2, z: -4}
@@ -294,6 +296,58 @@ MonoBehaviour:
   _horizontalInput: 0
   _verticalInput: 0
   _trolleyScript: {fileID: 0}
+--- !u!114 &1178955826480325783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107980596810229147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkAnimatorExpanded: 0
+  AuthorityMode: 0
+  m_Animator: {fileID: 129806764273758332}
+  TransitionStateInfoList: []
+  AnimatorParameterEntries:
+    ParameterEntries:
+    - name: Speed
+      NameHash: -823668238
+      Synchronize: 1
+      ParameterType: 1
+    - name: VerticalSpeed
+      NameHash: -1148172834
+      Synchronize: 1
+      ParameterType: 1
+    - name: IsGrounded
+      NameHash: 507951781
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsCrouching
+      NameHash: -1154928320
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsSliding
+      NameHash: -1809564513
+      Synchronize: 1
+      ParameterType: 4
+    - name: IsTargeting
+      NameHash: 1545890601
+      Synchronize: 1
+      ParameterType: 4
+    - name: MoveX
+      NameHash: 675470966
+      Synchronize: 1
+      ParameterType: 1
+    - name: MoveY
+      NameHash: 1598418656
+      Synchronize: 1
+      ParameterType: 1
+  AnimatorParametersExpanded: 0
 --- !u!1001 &5811824097863814637
 PrefabInstance:
   m_ObjectHideFlags: 0
