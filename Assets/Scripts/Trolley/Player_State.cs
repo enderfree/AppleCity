@@ -75,7 +75,7 @@ public class Player_State : NetworkBehaviour
     //Public of TransitionTo
     public void PublicStateSwitch(PlayerState next)
     {
-        //This call twice locally and on everyone's side, the local is a quick fix to inconsistent local bugs
+        //This call twice locally and on everyone's side, the local is a quick fix to inconsistent local bugs, which sometime or most of the time pressing F doesn't do anything.(worst: 10 click to make it work once)
         TransitionTo(next);
         SetPlayerStateOnServerRpc(next);
     }

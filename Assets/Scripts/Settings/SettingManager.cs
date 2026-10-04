@@ -21,8 +21,4 @@ public class SettingManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    private void MousePointer()
-    { 
-           
-    }
 }
