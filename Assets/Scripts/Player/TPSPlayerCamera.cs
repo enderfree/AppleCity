@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.UI.Image;
 
 public class TPSPlayerCamera : NetworkBehaviour
 {
@@ -8,22 +9,29 @@ public class TPSPlayerCamera : NetworkBehaviour
     [SerializeField] private float sensitivity = 0.1f;
 
     [SerializeField] private Vector3 offset = new Vector3(0f, 2f, -4f);
+    [SerializeField] private float _cameraUpLimit = 45f, _cameraDownLimit = -40f;
+    [SerializeField] private float _smoothSpeed = 10f;
+    //Default Mode
+    [SerializeField] private float _defaultDistance = -2.1f;
+    [SerializeField] private float _defaultHeight = 1.5f;
 
-    [SerializeField] private float targetDistance = 5f;
-    [SerializeField] private float targetHeight = 2f;
-    [SerializeField] private float smoothSpeed = 10f;
+    //Aiming Mode
+    [SerializeField] private float _targetDistance = 5f;
+    [SerializeField] private float _targetHeight = 2f;
+    
 
     private float yaw;
     private float pitch;
 
     [Header("Reference")]
-    private Camera playerCamera;
+    [SerializeField] private Camera playerCamera;
     private SimplePlayerMovement movement;
 
     [Header("TPS Raycast")]
-    private Vector3 _rayStartPoint;
-    private Vector3 _rayEndPoint;
-
+     private Transform _rayStartPoint;
+    [SerializeField] private Vector3 _rayEndPoint;
+    [SerializeField] private float _maxDistance = 50f;
+    [SerializeField] private LayerMask _layer;
 
 
 
@@ -40,7 +48,10 @@ public class TPSPlayerCamera : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        UpdateCameraPosition();
+
         NormalCamera();
+        RaycastThrowDirection(_rayStartPoint.position, _rayStartPoint.forward);
     }
 
     private void NormalCamera()
@@ -50,7 +61,7 @@ public class TPSPlayerCamera : NetworkBehaviour
 
         yaw += mouse.x * sensitivity;
         pitch -= mouse.y * sensitivity;
-        pitch =  Mathf.Clamp( pitch, -40f, 60f);
+        pitch =  Mathf.Clamp( pitch, _cameraDownLimit, _cameraUpLimit);
 
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
 
@@ -60,4 +71,28 @@ public class TPSPlayerCamera : NetworkBehaviour
         playerCamera.transform.rotation = rotation;
     }
 
+    private Vector3 RaycastThrowDirection(Vector3 origin, Vector3 direction)
+    {
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, _maxDistance, _layer))
+        {
+            Debug.DrawLine(origin, hit.point, Color.green);
+
+            _rayEndPoint = hit.point;
+        }
+        else
+        {
+            Debug.DrawRay(origin, direction * _maxDistance, Color.red);
+
+            Ray noHit = new Ray(origin, direction);
+            _rayEndPoint = noHit.GetPoint(_maxDistance);
+        }
+            
+
+        return _rayEndPoint;
+    }
+
+    private void UpdateCameraPosition()
+    {
+        _rayStartPoint = playerCamera.transform;
+    }
 }

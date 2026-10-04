@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3207395885
+  GlobalObjectIdHash: 472757201
   InScenePlacedSourceGlobalObjectIdHash: 472757201
   DeferredDespawnTick: 0
   Ownership: 1
@@ -331,10 +331,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TPSPlayerCamera
   ShowTopMostFoldoutHeaderGroup: 1
   sensitivity: 0.1
-  offset: {x: 0, y: 2, z: -4}
-  targetDistance: 5
-  targetHeight: 2
+  offset: {x: 0.5, y: 1.5, z: -2.1}
+  targetDistance: 4
+  targetHeight: 12
   smoothSpeed: 10
+  playerCamera: {fileID: 0}
+  _maxDistance: 50
+  _layer:
+    serializedVersion: 2
+    m_Bits: 2577
 --- !u!114 &495829295415285609
 MonoBehaviour:
   m_ObjectHideFlags: 0

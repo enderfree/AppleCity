@@ -36,8 +36,14 @@ public class UiManager : MonoBehaviour
     }
     private void OnPausingMenu()
     {
-        if (tabState == UIstate.Playing || tabState == UIstate.Inventory) { tabState = UIstate.PauseMenu; }
-        else if (tabState == UIstate.PauseMenu || tabState == UIstate.Settings) { tabState = UIstate.Playing; }
+        if (tabState == UIstate.Playing || tabState == UIstate.Inventory)
+        {
+            tabState = UIstate.PauseMenu;
+        }
+        else if (tabState == UIstate.PauseMenu || tabState == UIstate.Settings) 
+        {
+            tabState = UIstate.Playing;
+        }
         ChangeTabState();
     }
 
@@ -109,7 +115,14 @@ public class UiManager : MonoBehaviour
 
     private void InventoryButton()
     {
-        tabState = UIstate.Inventory;
+        if (tabState == UIstate.Playing)
+        {
+            tabState = UIstate.Inventory;
+        }
+        else if (tabState == UIstate.Inventory)
+        {
+            tabState = UIstate.Playing;
+        }
         ChangeTabState();
     }
 
