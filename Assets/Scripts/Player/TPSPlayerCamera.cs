@@ -30,6 +30,7 @@ public class TPSPlayerCamera : NetworkBehaviour
     [Header("TPS Raycast")]
      private Transform _rayStartPoint;
     [SerializeField] private Vector3 _rayEndPoint;
+    public Vector3 ReadRayEndPoint => _rayEndPoint;
     [SerializeField] private float _maxDistance = 50f;
     [SerializeField] private LayerMask _layer;
 
@@ -66,7 +67,7 @@ public class TPSPlayerCamera : NetworkBehaviour
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
 
 
-        //Camera Position
+        //Camera Position and Rotation
         playerCamera.transform.position = transform.position + rotation * offset;
         playerCamera.transform.rotation = rotation;
     }

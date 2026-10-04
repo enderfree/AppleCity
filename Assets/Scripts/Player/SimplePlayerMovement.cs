@@ -1,10 +1,11 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Threading.Tasks;
 
 public class SimplePlayerMovement : NetworkBehaviour
 {
-    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float walkSpeed = 4f;
     [SerializeField] private float runSpeed = 8f;
     [SerializeField] private float crouchSpeed = 2.5f;
     [SerializeField] private float targetSpeed = 4f;
@@ -14,7 +15,8 @@ public class SimplePlayerMovement : NetworkBehaviour
 
     [SerializeField] private float turnSpeed = 10f;
     [SerializeField] private float jumpHeight = 1.5f;
-
+    public bool _canJump = true;
+    public bool _canDoubleJump = true;
     
 
     [SerializeField] private Animator animator;
@@ -219,25 +221,27 @@ public class SimplePlayerMovement : NetworkBehaviour
         if (controller.isGrounded)
         {
             verticalSpeed = -2f;
+            _canDoubleJump = true;
 
-            if (!isLanding &&
-                !IsCrouching.Value &&
-                !IsSliding.Value &&
-                Keyboard.current.spaceKey.wasPressedThisFrame)
-            {
-                verticalSpeed =
-                    Mathf.Sqrt(
-                        jumpHeight *
-                        -2f *
-                        Physics.gravity.y
-                    );
-            }
+            if (_canJump && Input.GetKeyDown(KeyCode.Space))
+            Jump();
+
+            
         }
         else
         {
             verticalSpeed +=
                 Physics.gravity.y *
                 Time.deltaTime;
+
+            if (_canDoubleJump && _canJump && Input.GetKeyDown(KeyCode.Space)) 
+            {
+                verticalSpeed = 0;
+
+                Jump();
+                _canDoubleJump = false;
+                Debug.Log("triggered?");
+            }
         }
 
         movement =
@@ -250,5 +254,23 @@ public class SimplePlayerMovement : NetworkBehaviour
         );
     }
 
+    private void Jump()
+    {
+            JumpCooldown();
+            verticalSpeed = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
+            animator.SetTrigger("Jump");
+    }
+
+    private async void JumpCooldown()
+    {
+        _canJump = false;
+       await Delay(0.4f);
+        _canJump = true;
+    }
+
+    private async Task Delay(float seconds)
+    {
+        await Awaitable.WaitForSecondsAsync(seconds);
+    }
 
 }

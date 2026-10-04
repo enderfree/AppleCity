@@ -6,6 +6,9 @@ public class SimplePlayerAnimation : MonoBehaviour
 
     private CharacterController controller;
     private SimplePlayerMovement playerMovement;
+    private float speed;
+    private bool isJump;
+    [SerializeField] private float speedDeltaTimeMultiplier = 1f;
 
     private Vector3 lastPosition;
 
@@ -21,7 +24,7 @@ public class SimplePlayerAnimation : MonoBehaviour
             transform.position;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         Vector3 movement =
             transform.position -
@@ -34,9 +37,8 @@ public class SimplePlayerAnimation : MonoBehaviour
                 movement.z
             );
 
-        float speed =
-            horizontalMovement.magnitude /
-            Time.deltaTime;
+        speed = Mathf.MoveTowards(speed, horizontalMovement.magnitude/Time.deltaTime, Time.deltaTime* speedDeltaTimeMultiplier);
+
 
         float verticalSpeed =
             movement.y /
@@ -99,5 +101,16 @@ public class SimplePlayerAnimation : MonoBehaviour
 
         lastPosition =
             transform.position;
+
+        if (!isJump && verticalSpeed >= 0.1 && !controller.isGrounded)
+        {
+          //  animator.SetTrigger("Jump");
+            isJump = true;
+        }
+
+        if (controller.isGrounded)
+        { 
+         isJump = false;
+        }
     }
 }
