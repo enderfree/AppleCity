@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class TPSPlayerCamera : NetworkBehaviour
 {
+    [Header("Camera Move")]
     [SerializeField] private float sensitivity = 0.1f;
 
     [SerializeField] private Vector3 offset = new Vector3(0f, 2f, -4f);
@@ -12,11 +13,18 @@ public class TPSPlayerCamera : NetworkBehaviour
     [SerializeField] private float targetHeight = 2f;
     [SerializeField] private float smoothSpeed = 10f;
 
+    private float yaw;
+    private float pitch;
+
+    [Header("Reference")]
     private Camera playerCamera;
     private SimplePlayerMovement movement;
 
-    private float yaw;
-    private float pitch;
+    [Header("TPS Raycast")]
+    private Vector3 _rayStartPoint;
+    private Vector3 _rayEndPoint;
+
+
 
 
     public override void OnNetworkSpawn()
