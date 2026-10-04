@@ -201,7 +201,6 @@ MonoBehaviour:
   slideDuration: 0.7
   turnSpeed: 10
   jumpHeight: 1.5
-  targetRange: 15
   animator: {fileID: 129806764273758332}
   IsCrouching:
     UpdateTraits:
@@ -310,7 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkAnimator
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkAnimatorExpanded: 0
-  AuthorityMode: 0
+  AuthorityMode: 1
   m_Animator: {fileID: 129806764273758332}
   TransitionStateInfoList: []
   AnimatorParameterEntries:

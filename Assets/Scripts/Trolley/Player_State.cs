@@ -70,18 +70,18 @@ public class Player_State : NetworkBehaviour
             case PlayerState.Trolley_State: PlayerTrolleyState(); break;
         }
     }
+
+
     //Public of TransitionTo
-
-
     public void PublicStateSwitch(PlayerState next)
     {
-        //Odd repetition, but somehow it fixes some ownership issue, check this issue when I have more time
+        //This call twice locally and on everyone's side, the local is a quick fix to inconsistent local bugs
         TransitionTo(next);
-        SetPlayerStateRpc(next);
+        SetPlayerStateOnServerRpc(next);
     }
 
-    [Rpc(SendTo.Owner)]
-    private void SetPlayerStateRpc(PlayerState next)
+    [Rpc(SendTo.Everyone)]
+    private void SetPlayerStateOnServerRpc(PlayerState next)
     {
         TransitionTo(next);
     }
