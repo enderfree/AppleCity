@@ -15,8 +15,10 @@ public class SimplePlayerMovement : NetworkBehaviour
 
     [SerializeField] private float turnSpeed = 10f;
     [SerializeField] private float jumpHeight = 1.5f;
-    public bool _canJump = true;
-    public bool _canDoubleJump = true;
+    [SerializeField] private float _gravityMultiplier = 1.2f;
+
+    private bool _canJump = true;
+    private bool _canDoubleJump = true;
     
 
     [SerializeField] private Animator animator;
@@ -230,9 +232,7 @@ public class SimplePlayerMovement : NetworkBehaviour
         }
         else
         {
-            verticalSpeed +=
-                Physics.gravity.y *
-                Time.deltaTime;
+            verticalSpeed += Physics.gravity.y * Time.deltaTime * _gravityMultiplier;
 
             if (_canDoubleJump && _canJump && Input.GetKeyDown(KeyCode.Space)) 
             {

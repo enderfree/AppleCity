@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4177033306499711002}
   - component: {fileID: 5053375536854271695}
+  - component: {fileID: 5666068405453505484}
   - component: {fileID: 2996251739507861756}
   - component: {fileID: 1178955826480325783}
   - component: {fileID: 4647600847793295846}
@@ -70,6 +71,28 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!95 &5666068405453505484
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107980596810229147}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
+  m_Controller: {fileID: 9100000, guid: f05d3b2681eb986429f068fec891980f, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &2996251739507861756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,8 +134,15 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkAnimatorExpanded: 0
   AuthorityMode: 1
-  m_Animator: {fileID: 129806764273758332}
-  TransitionStateInfoList: []
+  m_Animator: {fileID: 5666068405453505484}
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -499022955
+    DestinationState: -1907200461
+    TransitionDuration: 0.25
+    TriggerNameHash: -1907200461
+    TransitionIndex: 0
   AnimatorParameterEntries:
     ParameterEntries:
     - name: Speed
@@ -149,6 +179,10 @@ MonoBehaviour:
       ParameterType: 1
     - name: Jump
       NameHash: 125937960
+      Synchronize: 1
+      ParameterType: 9
+    - name: Throw
+      NameHash: -1907200461
       Synchronize: 1
       ParameterType: 9
   AnimatorParametersExpanded: 0
@@ -267,7 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d2f1daf7c13e2488c3a238c91f6578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimplePlayerAnimation
-  animator: {fileID: 129806764273758332}
+  animator: {fileID: 5666068405453505484}
   speedDeltaTimeMultiplier: 16
 --- !u!114 &6414669962989271884
 MonoBehaviour:
@@ -290,9 +324,8 @@ MonoBehaviour:
   slideDuration: 0.7
   turnSpeed: 10
   jumpHeight: 2
-  _canJump: 1
-  _canDoubleJump: 1
-  animator: {fileID: 129806764273758332}
+  _gravityMultiplier: 1.3
+  animator: {fileID: 5666068405453505484}
   IsCrouching:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -378,15 +411,78 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AppleThrow
   ShowTopMostFoldoutHeaderGroup: 1
+  _throwPoint: {fileID: 8145591538906735403}
   _theApple: {fileID: 0}
-  _currentThrowForce: 0
-  _normalForce: 0
-  _chargeForceRate: 0
+  _currentThrowForce: 5
+  _normalForce: 10
+  _chargeForceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 10
+      inSlope: 60.882317
+      outSlope: 60.882317
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.92052746
+    - serializedVersion: 3
+      time: 0.3
+      value: 50
+      inSlope: 193.9663
+      outSlope: 193.9663
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.39226514
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 200
+      inSlope: 195.35086
+      outSlope: 195.35086
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.07374239
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _chargedForce: 0
-  _isCharging: 0
-  _throwIsPressed: 0
-  _isAiming: 0
-  _animator: {fileID: 129806764273758332}
+  _chargedTime: 0
+  _animator: {fileID: 5666068405453505484}
+  testThrow: {fileID: 6704954349910305759, guid: 8ff97dc0457776c43a9a57ac9a82ddc1, type: 3}
+--- !u!1 &3095728505589292683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8145591538906735403}
+  m_Layer: 8
+  m_Name: ThrowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8145591538906735403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3095728505589292683}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.069, y: 0.023, z: 0.002}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1135826956606021081}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5811824097863814637
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -748,6 +844,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: f05d3b2681eb986429f068fec891980f, type: 2}
@@ -819,14 +919,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -2349476437193732044, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8145591538906735403}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
---- !u!95 &129806764273758332 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
+--- !u!4 &1135826956606021081 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -2349476437193732044, guid: 21af8c6b1e95b9c44a58497a2deda169, type: 3}
   m_PrefabInstance: {fileID: 5811824097863814637}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6281683948615969286 stripped

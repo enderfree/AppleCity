@@ -67772,4 +67772,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.4
+    functionName: Generate_TestApple
+    data: 
+    objectReferenceParameter: {fileID: 11500000, guid: 40fc7d7ead9c0c14aa0c0cb1b9ae39ef, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

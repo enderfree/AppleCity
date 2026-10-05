@@ -12,10 +12,12 @@ public class TPSPlayerCamera : NetworkBehaviour
     [SerializeField] private float _cameraUpLimit = 45f, _cameraDownLimit = -40f;
     [SerializeField] private float _smoothSpeed = 10f;
     //Default Mode
+    [Header("Default")]
     [SerializeField] private float _defaultDistance = -2.1f;
     [SerializeField] private float _defaultHeight = 1.5f;
 
     //Aiming Mode
+    [Header("Aim")]
     [SerializeField] private float _targetDistance = 5f;
     [SerializeField] private float _targetHeight = 2f;
     
