@@ -413,37 +413,28 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   _throwPoint: {fileID: 8145591538906735403}
   _theApple: {fileID: 0}
-  _currentThrowForce: 5
-  _normalForce: 10
+  _currentThrowForce: 2
+  _normalForce: 1
   _chargeForceCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 10
-      inSlope: 60.882317
-      outSlope: 60.882317
+      value: 1.8
+      inSlope: 1.6241958
+      outSlope: 1.6241958
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.92052746
-    - serializedVersion: 3
-      time: 0.3
-      value: 50
-      inSlope: 193.9663
-      outSlope: 193.9663
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.39226514
-      outWeight: 0.33333334
+      outWeight: 0.28059152
     - serializedVersion: 3
       time: 1
-      value: 200
-      inSlope: 195.35086
-      outSlope: 195.35086
+      value: 8
+      inSlope: 8.268702
+      outSlope: 8.268702
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.07374239
+      inWeight: 0.2217977
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

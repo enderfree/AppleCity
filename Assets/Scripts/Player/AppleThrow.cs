@@ -18,6 +18,7 @@ public class AppleThrow : NetworkBehaviour
     private Vector3 _throwDirection;
 
     [Header("Throw Force")]
+    //Apple are around 0.15 weight, throw force min/max look good around 2-8
     [SerializeField] private float _currentThrowForce;
     [SerializeField] private float _normalForce;
     [SerializeField] private AnimationCurve _chargeForceCurve;
@@ -66,12 +67,7 @@ public class AppleThrow : NetworkBehaviour
     private void Throw(Vector3 direction, float force )
     {
         // Throw direction can add a offset that is a little higher
-        Debug.Log($"Before force: {_appleRB.position}");
-
         _appleRB.AddForce(direction * force, ForceMode.Impulse);
-
-        Debug.Log($"After force: {_appleRB.position}");
-
 
         ClearAppleComponent();
     }
@@ -101,14 +97,16 @@ public class AppleThrow : NetworkBehaviour
         {
             _chargedTime += Time.deltaTime;
             _chargedForce = _chargeForceCurve.Evaluate(_chargedTime);
-        }
-        else
-        {
-            _chargedTime = 0;
-        }
 
+            _currentThrowForce = _chargedForce;
+        }
     }
 
+    private void ResetThrowForce()
+    {
+        _currentThrowForce = _normalForce;
+        _chargedTime = 0;
+    }    
 
     //Player key Input
     private void LeftButtonIsPressed()
@@ -130,8 +128,9 @@ public class AppleThrow : NetworkBehaviour
 
             //Short of time, animator is here for now and let animation event handle the throw
             _animator.SetTrigger("Throw");
-            //Reset time
+            //Reset time and throw force
             ChargingAddThrowForce();
+
         }
         else
         {
@@ -161,6 +160,8 @@ public class AppleThrow : NetworkBehaviour
         _appleRB.isKinematic = false;
 
         Throw(ThrowDirection(),_currentThrowForce);
+
+        ResetThrowForce();
     }
 
     [ContextMenu("Debug: Test Throw")]
