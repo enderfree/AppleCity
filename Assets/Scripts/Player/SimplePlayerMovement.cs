@@ -240,7 +240,6 @@ public class SimplePlayerMovement : NetworkBehaviour
 
                 Jump();
                 _canDoubleJump = false;
-                Debug.Log("triggered?");
             }
         }
 

@@ -25,16 +25,18 @@ public class AppleThrow : NetworkBehaviour
     [SerializeField] private float _chargedForce;
     [SerializeField] private float _chargedTime = 0;
     //execute safety
-    private bool _isThrown;
+   // private bool _isThrown;
     
 
     [Header("Input")]
-     private bool _throwIsPressed;
+    // no longer need them, until I need them
+    // private bool _throwIsPressed;
      private bool _isAiming;
      private bool _isCharging;
 
     [Header("Animator")]
     [SerializeField] private Animator _animator;
+    [SerializeField] private GameObject _crosshair;
 
     [Header("Debug")]
     [SerializeField] private GameObject testThrow;
@@ -44,6 +46,11 @@ public class AppleThrow : NetworkBehaviour
         _camera = GetComponent<TPSPlayerCamera>();
     }
 
+    public override void OnNetworkSpawn()
+    {
+        _crosshair = GameObject.Find("UI/Canvas (UI)/Gameplay UI/MainGameView/Crosshair_parent");
+    }
+
     private void Update()
     {
         if (!IsOwner) return;
@@ -51,9 +58,11 @@ public class AppleThrow : NetworkBehaviour
         LeftButtonIsPressed();
         RightButtonIsPressed();
     }
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         if (!IsOwner) return;
+
+        _camera.ReadisAimLazyVersion(_isAiming);
     }
 
 
@@ -111,7 +120,7 @@ public class AppleThrow : NetworkBehaviour
     //Player key Input
     private void LeftButtonIsPressed()
     {
-        if (Input.GetKey(KeyCode.Mouse0) && _isAiming)
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             _isCharging = true;
             ChargingAddThrowForce();
@@ -123,7 +132,7 @@ public class AppleThrow : NetworkBehaviour
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            _throwIsPressed = true;
+            //_throwIsPressed = true;
 
 
             //Short of time, animator is here for now and let animation event handle the throw
@@ -134,7 +143,7 @@ public class AppleThrow : NetworkBehaviour
         }
         else
         {
-            _throwIsPressed = false;
+           // _throwIsPressed = false;
         }
     }
 
@@ -143,24 +152,31 @@ public class AppleThrow : NetworkBehaviour
         if (Input.GetKey(KeyCode.Mouse1))
         {
             _isAiming = true;
+            _crosshair.gameObject.SetActive(true);
         }
         else 
         {
             _isAiming = false;
+            _crosshair.gameObject.SetActive(false);
         }
     }
-
+    
 
     [ContextMenu("Debug: Generate Test Apple")]
     public void Generate_TestApple()
     {
+        //This Function is the entire process of Throwing an Apple on Local, More modification require for Network:
+        //1.Generate apple from Debug > Replace this part with actual pulling out apple from inventory.
        _theApple = Instantiate(testThrow,_throwPoint.position, _throwPoint.rotation);
-        GetAppleComponent();
 
+        //Get the require information to throw the apple and set Kinematic to false, since it is true by default after generating and the apple will stay on air.
+        GetAppleComponent();
         _appleRB.isKinematic = false;
 
+        //2.Throw apple with current direction and force.
         Throw(ThrowDirection(),_currentThrowForce);
 
+        //3.Reset parameters before throwing next apple.
         ResetThrowForce();
     }
 

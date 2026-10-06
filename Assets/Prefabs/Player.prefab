@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2039824099577720512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6672472948840114783}
+  m_Layer: 0
+  m_Name: CameraPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6672472948840114783
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039824099577720512}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4177033306499711002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2107980596810229147
 GameObject:
   m_ObjectHideFlags: 0
@@ -44,6 +75,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6281683948615969286}
+  - {fileID: 6672472948840114783}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &5053375536854271695
@@ -371,14 +403,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TPSPlayerCamera
   ShowTopMostFoldoutHeaderGroup: 1
   sensitivity: 0.1
-  offset: {x: 0.5, y: 1.5, z: -2.1}
+  _offset: {x: 0, y: 0, z: 0}
   _cameraUpLimit: 45
   _cameraDownLimit: -40
+  _cameraPoint: {fileID: 6672472948840114783}
+  _smoothOffset: {x: 0, y: 0, z: 0}
   _smoothSpeed: 10
-  _defaultDistance: -2.1
-  _defaultHeight: 1.5
-  _targetDistance: 5
-  _targetHeight: 2
+  _defaultDistance: -3
+  _defaultHeight: 0.5
+  _defaultSide: 0.8
+  _aimDistance: -1
+  _aimHeight: 0.7
+  _aimSide: 0.6
+  _isAiming: 0
   playerCamera: {fileID: 0}
   _rayEndPoint: {x: 0, y: 0, z: 0}
   _maxDistance: 50
@@ -428,13 +465,13 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.28059152
     - serializedVersion: 3
-      time: 1
+      time: 0.8
       value: 8
-      inSlope: 8.268702
-      outSlope: 8.268702
+      inSlope: 11.401334
+      outSlope: 11.401334
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.2217977
+      inWeight: 0.08149177
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2

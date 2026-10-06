@@ -8,30 +8,36 @@ public class TPSPlayerCamera : NetworkBehaviour
     [Header("Camera Move")]
     [SerializeField] private float sensitivity = 0.1f;
 
-    [SerializeField] private Vector3 offset = new Vector3(0f, 2f, -4f);
+    [SerializeField] private Vector3 _offset;
     [SerializeField] private float _cameraUpLimit = 45f, _cameraDownLimit = -40f;
+    [SerializeField] private Transform _cameraPoint;
+    
+    private float yaw;
+    private float pitch;
+
+    [SerializeField] private Vector3 _smoothOffset;
     [SerializeField] private float _smoothSpeed = 10f;
+
     //Default Mode
     [Header("Default")]
     [SerializeField] private float _defaultDistance = -2.1f;
     [SerializeField] private float _defaultHeight = 1.5f;
+    [SerializeField] private float _defaultSide = 0.5f;
 
     //Aiming Mode
     [Header("Aim")]
-    [SerializeField] private float _targetDistance = 5f;
-    [SerializeField] private float _targetHeight = 2f;
-    
-
-    private float yaw;
-    private float pitch;
+    [SerializeField] private float _aimDistance = -1.4f;
+    [SerializeField] private float _aimHeight = 1.8f;
+    [SerializeField] private float _aimSide = 0.5f;
+    [SerializeField] private bool _isAiming;
 
     [Header("Reference")]
     [SerializeField] private Camera playerCamera;
     private SimplePlayerMovement movement;
 
     [Header("TPS Raycast")]
-     private Transform _rayStartPoint;
     [SerializeField] private Vector3 _rayEndPoint;
+    private Transform _rayStartPoint;
     public Vector3 ReadRayEndPoint => _rayEndPoint;
     [SerializeField] private float _maxDistance = 50f;
     [SerializeField] private LayerMask _layer;
@@ -45,6 +51,7 @@ public class TPSPlayerCamera : NetworkBehaviour
         movement = GetComponent<SimplePlayerMovement>();
         playerCamera.transform.SetParent(null);
         yaw = transform.eulerAngles.y;
+        
     }
 
     private void LateUpdate()
@@ -54,6 +61,7 @@ public class TPSPlayerCamera : NetworkBehaviour
         UpdateCameraPosition();
 
         NormalCamera();
+        CameraModeSwitch();
         RaycastThrowDirection(_rayStartPoint.position, _rayStartPoint.forward);
     }
 
@@ -69,25 +77,33 @@ public class TPSPlayerCamera : NetworkBehaviour
         Quaternion rotation = Quaternion.Euler(pitch, yaw, 0f);
 
 
-        //Camera Position and Rotation
-        playerCamera.transform.position = transform.position + rotation * offset;
+        //Camera update Position and Rotation
+        playerCamera.transform.position = _cameraPoint.transform.position + rotation * _smoothOffset;
         playerCamera.transform.rotation = rotation;
     }
 
+    private void CameraModeSwitch()
+    {
+        _offset = _isAiming ? new Vector3(_aimSide, _aimHeight, _aimDistance) : new Vector3(_defaultSide, _defaultHeight, _defaultDistance);
+        _smoothOffset = Vector3.MoveTowards(_smoothOffset, _offset, Time.deltaTime * _smoothSpeed);
+    }
+
+
+    //Raycast the point for aiming
     private Vector3 RaycastThrowDirection(Vector3 origin, Vector3 direction)
     {
         if (Physics.Raycast(origin, direction, out RaycastHit hit, _maxDistance, _layer))
         {
-            Debug.DrawLine(origin, hit.point, Color.green);
-
             _rayEndPoint = hit.point;
+
+            Debug.DrawLine(origin, hit.point, Color.red);
         }
         else
         {
-            Debug.DrawRay(origin, direction * _maxDistance, Color.red);
-
             Ray noHit = new Ray(origin, direction);
             _rayEndPoint = noHit.GetPoint(_maxDistance);
+
+            Debug.DrawRay(origin, direction * _maxDistance, Color.red);
         }
             
 
@@ -97,5 +113,12 @@ public class TPSPlayerCamera : NetworkBehaviour
     private void UpdateCameraPosition()
     {
         _rayStartPoint = playerCamera.transform;
+    }
+
+    public void ReadisAimLazyVersion(bool readBool)
+    { 
+     //I wonder what are the best way to pass variable around without too much referencing... but now I am running out of time
+
+     _isAiming = readBool;
     }
 }
