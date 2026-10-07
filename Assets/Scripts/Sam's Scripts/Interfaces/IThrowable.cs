@@ -8,9 +8,10 @@ public interface IThrowable
     public void ThrowItem();
 
     /// <summary>
-    /// How the thing behaves when hitting something midair
+    /// How the thing behaves when hitting something
     /// </summary>
-    public void OnImpact();
+    /// <param name="collision">The collision from the impact</param>
+    public void OnImpact(Collision collision);
 
     /// <summary>
     /// Damage value of the thrown item (since throwing is our main mean of defense)
