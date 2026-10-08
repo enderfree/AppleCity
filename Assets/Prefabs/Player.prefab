@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6672472948840114783}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CameraPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -450,6 +450,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   _throwPoint: {fileID: 8145591538906735403}
   _theApple: {fileID: 0}
+  _netApple: {fileID: 0}
   _currentThrowForce: 2
   _normalForce: 1
   _chargeForceCurve:
@@ -480,8 +481,8 @@ MonoBehaviour:
   _chargedTime: 0
   _animator: {fileID: 5666068405453505484}
   _crosshair: {fileID: 0}
-  _testThrow: {fileID: 6704954349910305759, guid: 8ff97dc0457776c43a9a57ac9a82ddc1, type: 3}
-  _testNetApple: {fileID: 5327379048643527528, guid: 8ff97dc0457776c43a9a57ac9a82ddc1, type: 3}
+  _testThrow: {fileID: 152639687054188983, guid: 09de80b5dceaf834d8e2357c404dd728, type: 3}
+  _testNetApple: {fileID: 6185195755693620985, guid: 9d74db31d5ddb5f48b1912bec3d74dac, type: 3}
 --- !u!1 &3095728505589292683
 GameObject:
   m_ObjectHideFlags: 0
