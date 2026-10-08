@@ -479,7 +479,9 @@ MonoBehaviour:
   _chargedForce: 0
   _chargedTime: 0
   _animator: {fileID: 5666068405453505484}
-  testThrow: {fileID: 6704954349910305759, guid: 8ff97dc0457776c43a9a57ac9a82ddc1, type: 3}
+  _crosshair: {fileID: 0}
+  _testThrow: {fileID: 6704954349910305759, guid: 8ff97dc0457776c43a9a57ac9a82ddc1, type: 3}
+  _testNetApple: {fileID: 5327379048643527528, guid: 8ff97dc0457776c43a9a57ac9a82ddc1, type: 3}
 --- !u!1 &3095728505589292683
 GameObject:
   m_ObjectHideFlags: 0

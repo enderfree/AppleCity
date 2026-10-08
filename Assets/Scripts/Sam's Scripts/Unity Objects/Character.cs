@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class Character: MonoBehaviour, IHitable
 {
     [Header("Character Attributes")]

@@ -163,9 +163,9 @@ public class Trolley_Script : NetworkBehaviour
         _F_button_CD = true;
     }
 
-    private async Task DelayActiveBox(float seconds)
+    private async Task DelayActiveBox(float sec)
     {
-        await Awaitable.WaitForSecondsAsync(seconds);
+        await Awaitable.WaitForSecondsAsync(sec);
     }
 
 

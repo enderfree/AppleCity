@@ -5,12 +5,10 @@ using UnityEngine;
 public class EnemyViewDetection : NetworkBehaviour
 {
     [SerializeField] private List<GameObject> _getPlayerList = new List<GameObject>();
-
-    public List<GameObject> playerListMirror => _getPlayerList;
     [SerializeField] private LayerMask _hitLayer;
     [SerializeField] private GameObject _head;
     [SerializeField] private NetworkVariable<bool> _seePlayer = new NetworkVariable<bool>(false);
-    public bool sawPlayer_r => _seePlayer.Value;
+    public bool _readSawPlayer => _seePlayer.Value;
 
 
 
@@ -18,34 +16,17 @@ public class EnemyViewDetection : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        if (col.gameObject.CompareTag("Player"))
-        {
-            var list = new List<GameObject>(_getPlayerList);
-
-            if (!list.Contains(col.gameObject))
-            {
-                list.Add(col.gameObject);
-                _getPlayerList = list;
-            }
-        }
+        GetPlayerToList(col);
     }
 
     private void OnTriggerExit(Collider col)
     {
         if (!IsServer) return;
 
-        _seePlayer.Value = false;
-        if (col.gameObject.CompareTag("Player"))
-        {
-            if (col.gameObject.CompareTag("Player"))
-            {
-                var list = new List<GameObject>(_getPlayerList);
-
-                list.Remove(col.gameObject);
-                _getPlayerList = list;
-            }
-        }
+        RemovePlayerToList(col);
     }
+
+    
 
     private void OnTriggerStay(Collider col)
     {
@@ -73,6 +54,7 @@ public class EnemyViewDetection : NetworkBehaviour
             {
                 if (hit.collider.gameObject == player)
                 {
+                    
                     Debug.Log("saw the player ");
                     _seePlayer.Value = true;
 
@@ -87,5 +69,41 @@ public class EnemyViewDetection : NetworkBehaviour
 
             Debug.DrawLine(_head.transform.position, target, Color.red);
         }
+    }
+
+    private void GetPlayerToList(Collider col)
+    {
+        if (col.gameObject.CompareTag("Player"))
+        {
+            var list = new List<GameObject>(_getPlayerList);
+
+            if (!list.Contains(col.gameObject))
+            {
+                list.Add(col.gameObject);
+                _getPlayerList = list;
+            }
+        }
+    }
+    private void RemovePlayerToList(Collider col)
+    {
+        _seePlayer.Value = false;
+        if (col.gameObject.CompareTag("Player"))
+        {
+            if (col.gameObject.CompareTag("Player"))
+            {
+                var list = new List<GameObject>(_getPlayerList);
+
+                list.Remove(col.gameObject);
+                _getPlayerList = list;
+            }
+        }
+    }
+
+
+    //Get Set
+    public virtual List<GameObject> GetPlayerList
+    {
+        get{ return _getPlayerList; }
+        set{ _getPlayerList = value; }
     }
 }

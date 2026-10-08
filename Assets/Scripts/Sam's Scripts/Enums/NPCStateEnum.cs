@@ -4,5 +4,7 @@ public enum NPCStateEnum
 {
     Idle, 
     Active, 
-    Aggressive
+    Aggressive,
+    Attacking,
+    Death
 }

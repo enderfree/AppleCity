@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class AppleThrow : NetworkBehaviour
@@ -13,6 +14,8 @@ public class AppleThrow : NetworkBehaviour
     //Ref this under the throw hand skeleton, so the apple will always spawn from the hand and targeting crosshair (end point)
     [SerializeField] private Transform _throwPoint;
     [SerializeField] private GameObject _theApple;
+    [SerializeField] private NetworkObject _netApple;
+    //Change rb ref from netapple.gameObject and remove _theApple since NetworkObject should replace it
     private Rigidbody _appleRB;
     private Vector3 _targetPoint => _camera.ReadRayEndPoint;
     private Vector3 _throwDirection;
@@ -25,21 +28,22 @@ public class AppleThrow : NetworkBehaviour
     [SerializeField] private float _chargedForce;
     [SerializeField] private float _chargedTime = 0;
     //execute safety
-   // private bool _isThrown;
-    
+    // private bool _isThrown;
+
 
     [Header("Input")]
     // no longer need them, until I need them
     // private bool _throwIsPressed;
-     private bool _isAiming;
-     private bool _isCharging;
+    private bool _isAiming;
+    private bool _isCharging;
 
     [Header("Animator")]
     [SerializeField] private Animator _animator;
     [SerializeField] private GameObject _crosshair;
 
     [Header("Debug")]
-    [SerializeField] private GameObject testThrow;
+    [SerializeField] private GameObject _testThrow;
+    [SerializeField] private NetworkObject _testNetApple;
 
     private void Awake()
     {
@@ -66,33 +70,12 @@ public class AppleThrow : NetworkBehaviour
     }
 
 
-    //Throw function
-    [ServerRpc]
-    public void ThrowServerRPC()
+    private void Throw(Vector3 direction, float force)
     {
-        Throw(ThrowDirection(), _currentThrowForce);
-    }
-
-    private void Throw(Vector3 direction, float force )
-    {
-        // Throw direction can add a offset that is a little higher
+        _appleRB.isKinematic = false;
         _appleRB.AddForce(direction * force, ForceMode.Impulse);
 
         ClearAppleComponent();
-    }
-
-    private void GetAppleComponent()
-    { 
-        if (_theApple != null)
-        {
-            _appleRB = _theApple.GetComponent<Rigidbody>();
-        }
-    }
-
-    private void ClearAppleComponent()
-    { 
-        _theApple = null;
-        _appleRB = null;
     }
 
     private Vector3 ThrowDirection()
@@ -115,7 +98,7 @@ public class AppleThrow : NetworkBehaviour
     {
         _currentThrowForce = _normalForce;
         _chargedTime = 0;
-    }    
+    }
 
     //Player key Input
     private void LeftButtonIsPressed()
@@ -143,7 +126,7 @@ public class AppleThrow : NetworkBehaviour
         }
         else
         {
-           // _throwIsPressed = false;
+            // _throwIsPressed = false;
         }
     }
 
@@ -154,29 +137,72 @@ public class AppleThrow : NetworkBehaviour
             _isAiming = true;
             _crosshair.gameObject.SetActive(true);
         }
-        else 
+        else
         {
             _isAiming = false;
             _crosshair.gameObject.SetActive(false);
         }
     }
-    
+
+    //Apple Function
+
+    private void GetAppleComponent()
+    {
+        _theApple = _netApple.gameObject;
+
+        if (_theApple != null)
+        {
+            _appleRB = _theApple.GetComponent<Rigidbody>();
+        }
+    }
+
+    private void ClearAppleComponent()
+    {
+        _theApple = null;
+        _appleRB = null;
+    }
+
+    private void GenerateApple(GameObject apple)
+    {
+        //Thats Local version only
+        _theApple = Instantiate(apple, _throwPoint.position, _throwPoint.rotation);
+    }
+
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void GenerateAppleServerRpc(RpcParams rpcParams = default)
+    {
+        // _theApple = Instantiate(apple, _throwPoint.position, _throwPoint.rotation);
+        //   var netApple = _theApple.GetComponent<NetworkObject>();
+        // netApple.Spawn();
+        ulong _playerId = rpcParams.Receive.SenderClientId;
+
+        _netApple = NetworkManager.SpawnManager.InstantiateAndSpawn(_testNetApple, _playerId, true, true, false, _throwPoint.position, _throwPoint.rotation);
+
+
+        // This is the basic way, More way to spawn
+        //https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.5/manual/basics/object-spawning.html
+    }
+
 
     [ContextMenu("Debug: Generate Test Apple")]
     public void Generate_TestApple()
     {
         //This Function is the entire process of Throwing an Apple on Local, More modification require for Network:
         //1.Generate apple from Debug > Replace this part with actual pulling out apple from inventory.
-       _theApple = Instantiate(testThrow,_throwPoint.position, _throwPoint.rotation);
+        GenerateAppleServerRpc();
 
-        //Get the require information to throw the apple and set Kinematic to false, since it is true by default after generating and the apple will stay on air.
+        //2.Get the require information to throw the apple and set Kinematic to false, since it is true by default after generating and the apple will stay on air.
+        // Client Fail to get component, but server have it.
+        // I tried request server to generate > client get component. Then Get Components() run faster than client get it, result Null ref errors.
+        // Try move throw script to Apple itself and execute it from server side directly without referencing anything from this script
+        // Or instantiate the apple when player press 1-4 to select the apple, so there are no ref delay issue.
         GetAppleComponent();
-        _appleRB.isKinematic = false;
 
-        //2.Throw apple with current direction and force.
+        //3.Throw apple with current direction and force.
         Throw(ThrowDirection(),_currentThrowForce);
 
-        //3.Reset parameters before throwing next apple.
+        //4.Reset parameters before throwing next apple.
         ResetThrowForce();
     }
 

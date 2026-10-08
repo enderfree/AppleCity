@@ -6,7 +6,7 @@ public class Chaser: NPC
     [SerializeField] private float _contactDamage;
     [SerializeField] private float _pursuitRange;
 
-    //Unity
+    //old reference script
     private void Update()
     {
         // NB. Teacher doesn't want us to work directly in there so get that out asap
