@@ -8,7 +8,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public int AppleCount => apples.Count;
 
-    public bool PickUp(Apple apple)
+    public bool PickUp(AppleBase apple)
     {
         if (!IsOwner)
         {
@@ -99,8 +99,8 @@ public class PlayerInventory : NetworkBehaviour
             return;
         }
 
-        Apple apple =
-            appleNetworkObject.GetComponent<Apple>();
+        AppleBase apple =
+            appleNetworkObject.GetComponent<AppleBase>();
 
         if (apple == null)
         {

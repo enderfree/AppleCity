@@ -237,11 +237,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fba349ba1d897b747a6919760b647ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AppleBase
+  ShowTopMostFoldoutHeaderGroup: 1
   _itemName: Apple
   _itemType: 0
   _description: 'An apple. '
   _weigth: 1
   _maxDurability: 4
   _durability: 4
+  _prompt: {fileID: 152639687054188983}
+  _defaultAppleID: 0
   _appleType: 0
   _damage: 1

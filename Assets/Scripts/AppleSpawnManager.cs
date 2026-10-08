@@ -6,7 +6,7 @@ public class AppleSpawnManager : MonoBehaviour
 {
     [Header("Apple")]
     [SerializeField]
-    private Apple applePrefab;
+    private AppleBase applePrefab;
 
     [Header("Spawn Points")]
     [SerializeField]
@@ -108,7 +108,7 @@ public class AppleSpawnManager : MonoBehaviour
             return;
         }
 
-        Apple apple =
+        AppleBase apple =
             Instantiate(
                 applePrefab,
                 spawnPoint.transform.position,

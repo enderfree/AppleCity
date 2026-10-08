@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class Item: MonoBehaviour, IHitable
+public class Item: NetworkBehaviour, IHitable
 {
     [Header("Item Attributes")]
     [SerializeField] private string _itemName;
