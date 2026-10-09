@@ -20,7 +20,7 @@ public class EnemyBehavior : NPC
     
 
     private bool _seePlayer => _vision._readSawPlayer;
-    private List<GameObject> _targetPlayers = new List<GameObject>();
+    [SerializeField] private List<GameObject> _targetPlayers;
 
     [Header("Attack Parameters")]
     [SerializeField] private float _damageOutput;
@@ -147,8 +147,9 @@ public class EnemyBehavior : NPC
     public void SearchPlayerList(List<GameObject> list)
     {
         _targetPlayers = list;
+        
 
-        if (_targetPlayers == null)
+        if (_targetPlayers == null || _targetPlayers.Count == 0)
         {
             TransitionTo(NPCStateEnum.Active);
         }

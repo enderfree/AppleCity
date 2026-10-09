@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 
 public class EnemySearchDetection : NetworkBehaviour
 {
+    [SerializeField] private GameObject _thisDetection;
     [SerializeField] private float _activeTime =2f;
     [SerializeField] private List<GameObject> _getPlayerList = new List<GameObject>();
     [SerializeField] private LayerMask _hitLayer;
 
     //ref
-    private EnemyBehavior _behavior;
+    [SerializeField] private EnemyBehavior _behavior;
+    
 
 
     private void OnTriggerEnter(Collider col)
@@ -27,6 +29,8 @@ public class EnemySearchDetection : NetworkBehaviour
         RemovePlayerToList(col);
     }
 
+
+
     private void OnEnable()
     {
         ActiveTime();
@@ -34,7 +38,7 @@ public class EnemySearchDetection : NetworkBehaviour
 
     private void OnDisable()
     {
-        GetPlayerList.Clear();
+        _getPlayerList.Clear();
     }
 
 
@@ -70,8 +74,11 @@ public class EnemySearchDetection : NetworkBehaviour
         await Delay(_activeTime);
 
         //Send player list to Behavior and deactivate self
-        _behavior.SearchPlayerList(GetPlayerList);
-        gameObject.SetActive(false);
+        _behavior.SearchPlayerList(new List<GameObject>(_getPlayerList));
+        Debug.Log("Search player send result");
+
+        await Delay(0.05f);
+         gameObject.SetActive(false);
     }
 
     private async Task Delay(float sec)
