@@ -1,7 +1,8 @@
 using UnityEngine;
+using Unity.Netcode;
 
 
-public class Character: MonoBehaviour, IHitable
+public class Character: NetworkBehaviour, IHitable
 {
     [Header("Character Attributes")]
     [SerializeField] private string _charName;
