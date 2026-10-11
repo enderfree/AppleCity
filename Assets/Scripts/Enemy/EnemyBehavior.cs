@@ -1,8 +1,9 @@
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Threading.Tasks;
 
 public class EnemyBehavior : NPC
 {
@@ -24,8 +25,7 @@ public class EnemyBehavior : NPC
     [SerializeField] private float _idleTime = 2f;
 
     //Random point and compare currentposition to designated position to decide whenever it should go Idle or choose a new point
-    [SerializeField] private float _searchMinRadius = 30f;
-    [SerializeField] private float _searchMaxRadius = 100f;
+    [SerializeField] private float _searchMinRadius = 30f,_searchMaxRadius = 200f ;
     [SerializeField] private Vector3 _recordedPosition;
 
     //Bear kinda need a rest too if being active for too long
@@ -86,13 +86,16 @@ public class EnemyBehavior : NPC
         //Bear is angry at you
         if (NPCState == NPCStateEnum.Aggressive)
         {
-            GetPlayerTargetAndChase();
+            if (Agent.isActiveAndEnabled)
+                  ChaseTarget();
         }
 
         //Bear just chill around
         else if (NPCState == NPCStateEnum.Active)
         {
-            CheckPatrolProgress();
+            if(Agent.isActiveAndEnabled)
+                CheckPatrolProgress();
+
             _stateActiveTime = Countdown(_stateActiveTime);
         }
 
@@ -123,16 +126,19 @@ public class EnemyBehavior : NPC
 
     private async void IdleState()
     {
+        //Set state parameters
         Agent.speed = _IdleSpeed;
         Agent.stoppingDistance = _idleStopDis;
         _stateActiveTime = _stateActiveTimeLimit;
         Agent.angularSpeed = _normalAngularSpeed;
         StopNavAgent();
 
+        //Bear rest time
         await Delay(_idleTime);
 
         RestartNavAgent();
-
+        
+        //Bear saw no one, start walking around
         if (!_seePlayer || _targetPlayers.Count == 0)
         {
             TransitionTo(NPCStateEnum.Active);
@@ -141,47 +147,78 @@ public class EnemyBehavior : NPC
     }
     private void ActiveState()
     {
+        //Set state parameters
         _visionBox.SetActive(true);
-        Agent.angularSpeed = _normalAngularSpeed;
 
-        Vector3 generateRandomPoint = RandomNavmeshLocation(_searchMinRadius, _searchMaxRadius);
+        if (Agent.isActiveAndEnabled)
+        {
+            Agent.angularSpeed = _normalAngularSpeed;
+            Agent.speed = _walkSpeed;
 
-        _recordedPosition = generateRandomPoint;
-        Agent.SetDestination(generateRandomPoint);
+            //looking for where it wanna go
+            Vector3 generateRandomPoint = RandomNavmeshLocation(_searchMinRadius, _searchMaxRadius);
 
-        RestartNavAgent();
-        Agent.speed = _walkSpeed;
+            _recordedPosition = generateRandomPoint;
+            Agent.SetDestination(generateRandomPoint);
+
+            RestartNavAgent();
+        }
+
+        
     }
     private void AggressiveState()
     {
         //disable unnecessary detection, vision can be heavy
+        //set parameter
         _visionBox.SetActive(false);
-        Agent.stoppingDistance = _aggressiveStopDis;
-        Agent.speed = _runSpeed;
-        Agent.angularSpeed = _normalAngularSpeed;
 
-        //Old method is still useful, but use the new one, since it doens't search the player constantly
-        OldGetPlayerTargetAndChase();
+        if (Agent.isActiveAndEnabled) 
+        {
+            Agent.stoppingDistance = _aggressiveStopDis;
+            Agent.speed = _runSpeed;
+            Agent.angularSpeed = _normalAngularSpeed;
+
+            //Old method is still useful, but use the new one, since it doens't search the player constantly
+             GetPlayerTargetAndChase();
+        }
     }
 
     //Navemesh Functions
     public void GoToPoint(Vector3 point)
     {
-        Agent.SetDestination(point);
+        if (Agent.isActiveAndEnabled)
+            Agent.SetDestination(point);
     }
 
     public void StopNavAgent()
     {
-        Agent.isStopped = true;
+        if (Agent.isActiveAndEnabled)
+            Agent.isStopped = true;
     }
 
     public void RestartNavAgent()
     {
-        Agent.isStopped = false;
+        if (Agent.isActiveAndEnabled)
+            Agent.isStopped = false;
+    }
+
+    private void ChaseTarget()
+    {
+        if (Target != null && Agent.isActiveAndEnabled)
+        {
+            Agent.SetDestination(Target.position);
+        }
     }
 
     private void GetPlayerTargetAndChase()
     {
+        if (Target == null || Vector3.Distance(transform.position, Target.position) > PursuitRange)
+        {
+            Transform newTarget = _targetPlayers[0].gameObject.transform;
+
+            Target = newTarget;
+        }
+
         if (Target != null)
         {
             Agent.SetDestination(Target.position);
@@ -221,6 +258,7 @@ public class EnemyBehavior : NPC
     {
         
     }
+
     private void DeathState()
     {
         if (!IsServer) return;
@@ -262,14 +300,24 @@ public class EnemyBehavior : NPC
         }
     }
 
+    public void AddTargetOnSight(GameObject target)
+    {
+        if (!_targetPlayers.Contains(target))
+        { 
+         _targetPlayers.Add(target);
+        }
+    }
 
-    //Async
 
+    //Async and Countdown utilities
+
+    //Delay X second
     private async Task Delay(float sec)
     {
         await Awaitable.WaitForSecondsAsync(sec);
     }
 
+    //count any variable to 0
     private float Countdown(float time)
     {
         time = Mathf.MoveTowards(time,0, Time.deltaTime);
@@ -292,32 +340,10 @@ public class EnemyBehavior : NPC
 
 
 
-    //Old methods for references
+    
 
 
-    private void OldGetPlayerTargetAndChase()
-    {
-        if (Target == null || Vector3.Distance(transform.position, Target.position) > PursuitRange)
-        {
-            Transform newTarget = null;
 
-            foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
-            {
-                if (newTarget == null ||
-                    Vector3.Distance(transform.position, player.transform.position) < Vector3.Distance(transform.position, newTarget.position))
-                {
-                    newTarget = player.transform;
-                }
-            }
-
-            Target = newTarget;
-        }
-
-        if (Target != null)
-        {
-            Agent.SetDestination(Target.position);
-        }
-    }
 
     //Debug
 

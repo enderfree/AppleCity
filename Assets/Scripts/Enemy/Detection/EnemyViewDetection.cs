@@ -10,6 +10,9 @@ public class EnemyViewDetection : NetworkBehaviour
     [SerializeField] private NetworkVariable<bool> _seePlayer = new NetworkVariable<bool>(false);
     public bool _readSawPlayer => _seePlayer.Value;
 
+    //ref
+    [SerializeField] private EnemyBehavior _behaviour;
+
 
 
     private void OnTriggerEnter(Collider col)
@@ -57,11 +60,12 @@ public class EnemyViewDetection : NetworkBehaviour
                     
                     Debug.Log("saw the player ");
                     _seePlayer.Value = true;
+                    _behaviour.AddTargetOnSight(player);
 
                 }
                 else
                 {
-                    if (!_seePlayer.Value) return;
+
                     Debug.Log("saw no one ");
                     _seePlayer.Value = false;
                 }

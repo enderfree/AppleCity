@@ -459,6 +459,7 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  _behaviour: {fileID: 2316102086981862663}
 --- !u!1 &7810566507450857051
 GameObject:
   m_ObjectHideFlags: 0
