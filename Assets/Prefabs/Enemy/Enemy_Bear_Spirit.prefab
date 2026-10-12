@@ -232,6 +232,37 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!1 &1909307064146579035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6234165822041851422}
+  m_Layer: 0
+  m_Name: Hitboxes_list
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6234165822041851422
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909307064146579035}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.10000001, y: 0.11387067, z: 0.047925334}
+  m_LocalScale: {x: 0.06666667, y: 0.06666667, z: 0.06666667}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8377550178050566616}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4717961839895457432
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,6 +275,7 @@ GameObject:
   - component: {fileID: 6694011289869723431}
   - component: {fileID: 2509521216838868929}
   - component: {fileID: 6797284496789749838}
+  - component: {fileID: 2841557873195454602}
   m_Layer: 11
   m_Name: SearchDetection
   m_TagString: Untagged
@@ -344,6 +376,26 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2841557873195454602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717961839895457432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8362c981a6dcc194c98fdd8841a091a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySearchDetection
+  ShowTopMostFoldoutHeaderGroup: 1
+  _thisDetection: {fileID: 4717961839895457432}
+  _activeTime: 1
+  _getPlayerList: []
+  _hitLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _behavior: {fileID: 2316102086981862663}
 --- !u!1 &7403671606267277475
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 15598195
+  GlobalObjectIdHash: 1938047269
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -814,6 +866,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
       insertIndex: -1
       addedObject: {fileID: 244251913856210796}
+    - targetCorrespondingSourceObject: {fileID: 400000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6234165822041851422}
     - targetCorrespondingSourceObject: {fileID: 400008, guid: bd230207ae5490e448055f036d3af422, type: 3}
       insertIndex: -1
       addedObject: {fileID: 771829166164486362}
@@ -851,12 +906,44 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2316102086981862663}
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4971687075674710267}
+    - targetCorrespondingSourceObject: {fileID: 100096, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4798291021622811580}
   m_SourcePrefab: {fileID: 100100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
 --- !u!95 &8377550178040677944 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9500000, guid: bd230207ae5490e448055f036d3af422, type: 3}
   m_PrefabInstance: {fileID: 8377550178050175832}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8377550178050208856 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100096, guid: bd230207ae5490e448055f036d3af422, type: 3}
+  m_PrefabInstance: {fileID: 8377550178050175832}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &4798291021622811580
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8377550178050208856}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 3857
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.20000112, y: 0.27245083, z: 0.44231302}
+  m_Center: {x: -0.00000039736432, y: -0.061632283, z: 0.18505682}
 --- !u!1 &8377550178050209264 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100008, guid: bd230207ae5490e448055f036d3af422, type: 3}
@@ -884,7 +971,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.20000112, y: 0.23758276, z: 0.43532443}
   m_Center: {x: -0.00000039736432, y: 0.1812106, z: -0.015672462}
@@ -1032,13 +1119,48 @@ MonoBehaviour:
   NetworkAnimatorExpanded: 0
   AuthorityMode: 0
   m_Animator: {fileID: 8377550178040677944}
-  TransitionStateInfoList: []
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -2089788878
+    DestinationState: -200064719
+    TransitionDuration: 0.1
+    TriggerNameHash: -1098657939
+    TransitionIndex: 0
   AnimatorParameterEntries:
     ParameterEntries:
     - name: Speed_f
       NameHash: 259340435
       Synchronize: 1
       ParameterType: 1
+    - name: isAttacking
+      NameHash: 973584577
+      Synchronize: 1
+      ParameterType: 4
+    - name: ClawAttack
+      NameHash: -395288245
+      Synchronize: 1
+      ParameterType: 9
+    - name: DoubleClawAttack
+      NameHash: 117495717
+      Synchronize: 1
+      ParameterType: 9
+    - name: DropAttack
+      NameHash: -1098657939
+      Synchronize: 1
+      ParameterType: 9
+    - name: SpinAttack
+      NameHash: -1534487698
+      Synchronize: 1
+      ParameterType: 9
+    - name: RushAttack
+      NameHash: -1887984186
+      Synchronize: 1
+      ParameterType: 9
+    - name: Flinch
+      NameHash: 1038048563
+      Synchronize: 1
+      ParameterType: 9
   AnimatorParametersExpanded: 0
 --- !u!195 &6355913677144079175
 NavMeshAgent:
@@ -1051,7 +1173,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.25
   m_Speed: 40
-  m_Acceleration: 6
+  m_Acceleration: 20
   avoidancePriority: 50
   m_AngularSpeed: 600
   m_StoppingDistance: 2
@@ -1083,16 +1205,15 @@ MonoBehaviour:
   _npcState: 1
   _target: {fileID: 0}
   _agent: {fileID: 6355913677144079175}
-  _animator: {fileID: 8377550178040677944}
   _IdleSpeed: 0
   _walkSpeed: 2
   _runSpeed: 15
-  _pursuitRange: 100
+  _pursuitRange: 50
   _idleStopDis: 0
   _aggressiveStopDis: 2
   _normalAngularSpeed: 500
-  _attackAngularSpeed: 250
   _idleTime: 7
+  _idleTimeShort: 2
   _searchMinRadius: 30
   _searchMaxRadius: 100
   _recordedPosition: {x: 0, y: 0, z: 0}
@@ -1101,12 +1222,40 @@ MonoBehaviour:
   _visionBox: {fileID: 7403671606267277475}
   _searchBox: {fileID: 4717961839895457432}
   _targetPlayers: []
-  _dttackCooldown: 2
-  _dashAttackSpped: 60
-  _dashAngularSpeed: 30
-  _hitboxes: []
+  _attackAnimDuration: 0
+  _attackCooldown: 1
   _audioPlayer: {fileID: 0}
   _bearNoise: {fileID: 0}
+--- !u!114 &4971687075674710267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8377550178050209272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3625dbc908e82cb43bdcd99bec9f2a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy_Bear_AttackPattern
+  ShowTopMostFoldoutHeaderGroup: 1
+  _hitboxes: []
+  _targetRange: 0
+  _clawAttackCD: 3
+  _clawAttackSpped: 0.5
+  _clawAttackAngularSpeed: 250
+  _doubleClawCD: 8
+  _doubleClawAttackSpped: 0
+  _doubleClawAttackAngularSpeed: 60
+  _dashAttackCD: 2
+  _dashAttackSpped: 60
+  _dashAngularSpeed: 30
+  _dropAttackCD: 10
+  _dropAttackSpped: 10
+  _dropAttackAngularSpeed: 30
+  _spinCD: 20
+  _spinAttackSpped: 0.5
+  _spinAttackAngularSpeed: 30
 --- !u!4 &8377550178050566608 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400008, guid: bd230207ae5490e448055f036d3af422, type: 3}

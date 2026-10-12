@@ -10,19 +10,19 @@ public class EnemyBehavior : NPC
     //HP and other parameters are handled by parent classes
     //Changes: 1. HP parameter should be handled with SyncVar 2. Character GrandParent should be networkBehavior to make everything online
 
-    [Header("Enemy ref")]
-    [SerializeField] private Animator _animator;
+  
+     private Animator _animator;
 
     [Header("Navmesh/Navigation AI")]
     [SerializeField] private float _IdleSpeed = 0f;
     [SerializeField] private float _walkSpeed = 4f;
     [SerializeField] private float _runSpeed = 30f;
-    [SerializeField] private float _pursuitRange = 100f;
+    [SerializeField] private float _pursuitRange = 50f;
     [SerializeField] private float _idleStopDis = 0f;
     [SerializeField] private float _aggressiveStopDis = 2f;
     [SerializeField] private float _normalAngularSpeed = 500f;
-    [SerializeField] private float _attackAngularSpeed = 250f;
-    [SerializeField] private float _idleTime = 2f;
+    [SerializeField] private float _idleTime = 7f;
+    [SerializeField] private float _idleTimeShort = 2f;
 
     //Random point and compare currentposition to designated position to decide whenever it should go Idle or choose a new point
     [SerializeField] private float _searchMinRadius = 30f,_searchMaxRadius = 200f ;
@@ -36,17 +36,13 @@ public class EnemyBehavior : NPC
     [SerializeField] private GameObject _visionBox;
     [SerializeField] private GameObject _searchBox;
     private EnemyViewDetection _vision;
-
-
     private bool _seePlayer => _vision._readSawPlayer;
     [SerializeField] private List<GameObject> _targetPlayers;
 
-    [Header("Attack Parameters")]
-    [SerializeField] private float _dttackCooldown = 2f;
-    [SerializeField] private float _dashAttackSpped = 60f;
-    [SerializeField] private float _dashAngularSpeed = 30f;
-    [SerializeField] private List<GameObject> _hitboxes;
-
+    [Header("Attack State")]
+    [SerializeField] private float _attackAnimDuration;
+    [SerializeField] private float _attackCooldown = 1.1f;
+    private bool _canAttack = true;
 
     [Header("Sound")]
     [SerializeField] private AudioSource _audioPlayer;
@@ -55,13 +51,15 @@ public class EnemyBehavior : NPC
 
     private void Awake()
     {
+        _animator = GetComponent<Animator>();
         _vision = _visionBox.GetComponent<EnemyViewDetection>();
     }
 
     private void OnEnable()
     {
-        TransitionTo(NPCStateEnum.Idle);
+        TransitionTo(NPCStateEnum.Idle, _idleTimeShort);
         _stateActiveTime = _stateActiveTimeLimit;
+        _canAttack = true;
 
     }
 
@@ -80,7 +78,7 @@ public class EnemyBehavior : NPC
         if (_seePlayer)
         {
             await Delay(1f);
-            TransitionTo(NPCStateEnum.Aggressive);
+            TransitionTo(NPCStateEnum.Aggressive,0);
         }
 
         //Bear is angry at you
@@ -102,20 +100,20 @@ public class EnemyBehavior : NPC
         //Bear tired, need rest
         if (_stateActiveTime == 0)
         {
-            TransitionTo(NPCStateEnum.Idle);
+            TransitionTo(NPCStateEnum.Idle, _idleTime);
         }
 
     }
 
     //Enemy State
 
-    private void TransitionTo(NPCStateEnum next)
+    private void TransitionTo(NPCStateEnum next, float idleTime)
     {
         NPCState = next;
 
         switch (next)
         {
-            case NPCStateEnum.Idle: IdleState(); break;
+            case NPCStateEnum.Idle: IdleState(idleTime); break;
             case NPCStateEnum.Active: ActiveState(); break;
             case NPCStateEnum.Aggressive: AggressiveState(); break;
             case NPCStateEnum.Attacking: AttackingState(); break;
@@ -124,7 +122,7 @@ public class EnemyBehavior : NPC
     }
 
 
-    private async void IdleState()
+    private async void IdleState(float idleTime)
     {
         //Set state parameters
         Agent.speed = _IdleSpeed;
@@ -134,16 +132,25 @@ public class EnemyBehavior : NPC
         StopNavAgent();
 
         //Bear rest time
-        await Delay(_idleTime);
+        await Delay(idleTime);
 
         RestartNavAgent();
         
         //Bear saw no one, start walking around
         if (!_seePlayer || _targetPlayers.Count == 0)
         {
-            TransitionTo(NPCStateEnum.Active);
+            TransitionTo(NPCStateEnum.Active, 0);
         }
 
+    }
+
+    // Go back to Idle when It is super close to the destination
+    private void CheckPatrolProgress()
+    {
+        if (!Agent.pathPending && Agent.remainingDistance <= Agent.stoppingDistance)
+        {
+            TransitionTo(NPCStateEnum.Idle, _idleTime);
+        }
     }
     private void ActiveState()
     {
@@ -183,12 +190,46 @@ public class EnemyBehavior : NPC
         }
     }
 
-    //Navemesh Functions
-    public void GoToPoint(Vector3 point)
+    //AttackState should exit after Attack ended and go back to Aggressive or Active
+    //New script for Attack Patterns
+    private async void AttackingState()
     {
-        if (Agent.isActiveAndEnabled)
-            Agent.SetDestination(point);
+        _canAttack = false;
+        AnimatorStateInfo animState = _animator.GetCurrentAnimatorStateInfo(0);
+        _attackAnimDuration = animState.length;
+        
+        await Delay(_attackAnimDuration);
+
+        //clear target and get a new one if detected
+        //ActiveSearchBox() should have a 1 sec async and active SearchPlayerList() later that update
+        Target = null;
+        ActiveSearchBox(); 
+        
+
+        if (_targetPlayers.Count >= 1)
+        {
+            TransitionTo(NPCStateEnum.Aggressive, 0);
+        }
+        else
+        {
+            TransitionTo(NPCStateEnum.Idle, _idleTimeShort);
+        }
+
+
+        await Delay(_attackCooldown);
+
+        _canAttack = true;
     }
+
+    private void DeathState()
+    {
+        if (!IsServer) return;
+
+
+        NetworkObject.Despawn();
+    }
+
+    //Navemesh Functions
 
     public void StopNavAgent()
     {
@@ -204,25 +245,27 @@ public class EnemyBehavior : NPC
 
     private void ChaseTarget()
     {
-        if (Target != null && Agent.isActiveAndEnabled)
+        // Chase player within range limit, if out of range, go back to idle
+        if (Agent.isActiveAndEnabled && Target != null || Vector3.Distance(transform.position, Target.position) < PursuitRange)
         {
             Agent.SetDestination(Target.position);
+        }
+        else if (Vector3.Distance(transform.position, Target.position) > PursuitRange)
+        {
+            TransitionTo(NPCStateEnum.Idle, _idleTimeShort);
         }
     }
 
     private void GetPlayerTargetAndChase()
     {
-        if (Target == null || Vector3.Distance(transform.position, Target.position) > PursuitRange)
+        if (Target == null ||  _targetPlayers.Count > 0)
         {
             Transform newTarget = _targetPlayers[0].gameObject.transform;
 
             Target = newTarget;
         }
 
-        if (Target != null)
-        {
-            Agent.SetDestination(Target.position);
-        }
+        ChaseTarget();
     }
 
     public Vector3 RandomNavmeshLocation(float minRadius, float maxRadius)
@@ -246,39 +289,6 @@ public class EnemyBehavior : NPC
         return finalPosition;
     }
 
-    private void CheckPatrolProgress()
-    {
-        if (!Agent.pathPending && Agent.remainingDistance <= Agent.stoppingDistance)
-        {
-            TransitionTo(NPCStateEnum.Idle);
-        }
-    }
-
-    private void AttackingState()
-    {
-        
-    }
-
-    private void DeathState()
-    {
-        if (!IsServer) return;
-
-
-         NetworkObject.Despawn();
-    }
-
-    //Attack methods that can be called with animation
-    public void ActiveHitBox(int boxNumber)
-    {
-        _hitboxes[boxNumber].gameObject.SetActive(true);
-    }
-
-    public void DeactiveHitBox(int boxNumber)
-    {
-        _hitboxes[boxNumber].gameObject.SetActive(false);
-    }
-
-
 
 
     //Get player list from search to update target to Attack
@@ -296,7 +306,7 @@ public class EnemyBehavior : NPC
 
         if (_targetPlayers == null || _targetPlayers.Count == 0)
         {
-            TransitionTo(NPCStateEnum.Active);
+            TransitionTo(NPCStateEnum.Active, 0);
         }
     }
 
@@ -338,21 +348,41 @@ public class EnemyBehavior : NPC
         }
     }
 
+    public virtual float AttackCooldown
+    {
+        get
+        {
+            return _attackCooldown;
+        }
+        set
+        {
+            _attackCooldown = value;
+        }
+    }
 
-
-    
-
-
-
+    public virtual bool CanAttack
+    {
+        get
+        {
+            return _canAttack;
+        }
+        set
+        {
+            _canAttack = value;
+        }
+    }
 
     //Debug
 
     [ContextMenu("Debug: Stanby")]
-    public void StanbyTest() => TransitionTo(NPCStateEnum.Idle);
+    public void StanbyTest() => TransitionTo(NPCStateEnum.Idle, _idleTime);
 
     [ContextMenu("Debug: Patrol")]
-    public void PatrolTest() => TransitionTo(NPCStateEnum.Active);
+    public void PatrolTest() => TransitionTo(NPCStateEnum.Active,0);
 
     [ContextMenu("Debug: Chase")]
-    public void ChaseTest() => TransitionTo(NPCStateEnum.Aggressive);
+    public void ChaseTest() => TransitionTo(NPCStateEnum.Aggressive,0);
+
+    [ContextMenu("Debug: Attack")]
+    public void AttackTest() => TransitionTo(NPCStateEnum.Attacking,0);
 }

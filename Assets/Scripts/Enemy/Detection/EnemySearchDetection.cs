@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 public class EnemySearchDetection : NetworkBehaviour
 {
     [SerializeField] private GameObject _thisDetection;
-    [SerializeField] private float _activeTime =2f;
+    [SerializeField] private float _activeTime =1f;
     [SerializeField] private List<GameObject> _getPlayerList = new List<GameObject>();
     [SerializeField] private LayerMask _hitLayer;
 

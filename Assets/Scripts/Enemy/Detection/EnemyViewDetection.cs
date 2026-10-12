@@ -65,7 +65,7 @@ public class EnemyViewDetection : NetworkBehaviour
                 }
                 else
                 {
-
+                    if (!_seePlayer.Value) return;
                     Debug.Log("saw no one ");
                     _seePlayer.Value = false;
                 }
