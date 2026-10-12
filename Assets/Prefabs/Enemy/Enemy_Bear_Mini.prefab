@@ -1739,8 +1739,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBehavior
   ShowTopMostFoldoutHeaderGroup: 1
   _charName: Spirit_Bear
-  _maxHP: 50
-  _hp: 50
+  _maxHP: 10
+  _hp: 10
   _weightCapacity: 500
   _carriedWeight: 500
   _npcState: 0
@@ -1780,6 +1780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Bear_AttackPattern
   ShowTopMostFoldoutHeaderGroup: 1
+  _isBoss: 0
   _hitboxes:
   - {fileID: 1492874030056718128}
   - {fileID: 9080858225338264948}
