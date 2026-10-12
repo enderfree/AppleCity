@@ -190,6 +190,7 @@ public class AppleThrow : NetworkBehaviour
     {
         //This Function is the entire process of Throwing an Apple on Local, More modification require for Network:
         //1.Generate apple from Debug > Replace this part with actual pulling out apple from inventory.
+        // Inventory is abolished, pick up apple that are already on field and they follow the player
         GenerateAppleServerRpc();
 
         //2.Get the require information to throw the apple and set Kinematic to false, since it is true by default after generating and the apple will stay on air.
