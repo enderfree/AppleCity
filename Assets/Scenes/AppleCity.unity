@@ -8318,9 +8318,21 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 2143632998
       objectReference: {fileID: 0}
+    - target: {fileID: 1098715551906860731, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1492874030056718128, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2316102086981862663, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: _npcState
-      value: 3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2316102086981862663, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: _runSpeed
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 2316102086981862663, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: _searchRadius
@@ -8336,15 +8348,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2316102086981862663, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: _normalAngularSpeed
-      value: 840
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 2316102086981862663, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: _stateActiveTimeLimit
       value: 45
       objectReference: {fileID: 0}
+    - target: {fileID: 2760271259082031132, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4798291021622811580, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4971687075674710267, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: _clawAttackAngularSpeed
+      value: 360
+      objectReference: {fileID: 0}
+    - target: {fileID: 4971687075674710267, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: _doubleClawAttackAngularSpeed
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 5055079121955085536, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5834395
+      objectReference: {fileID: 0}
+    - target: {fileID: 5055079121955085536, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.399528
+      objectReference: {fileID: 0}
+    - target: {fileID: 5055079121955085536, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5834395
       objectReference: {fileID: 0}
     - target: {fileID: 5264149458232419186, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: m_InScenePlaced
@@ -8362,8 +8398,28 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 2143632998
       objectReference: {fileID: 0}
+    - target: {fileID: 5959388501707884535, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.50789124
+      objectReference: {fileID: 0}
+    - target: {fileID: 5959388501707884535, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.20843245
+      objectReference: {fileID: 0}
+    - target: {fileID: 5959388501707884535, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.48486847
+      objectReference: {fileID: 0}
+    - target: {fileID: 5959388501707884535, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.002
+      objectReference: {fileID: 0}
     - target: {fileID: 6355913677144079175, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: m_Acceleration
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7284048319730199794, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: _contactDamage
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8377550178050209272, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
@@ -8413,6 +8469,10 @@ PrefabInstance:
     - target: {fileID: 8460256103804942920, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9123881244834667897, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
+      propertyPath: _contactDamage
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

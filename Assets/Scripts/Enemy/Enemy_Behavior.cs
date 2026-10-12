@@ -75,8 +75,9 @@ public class EnemyBehavior : NPC
     private async void BehaviourLogic()
     {
         // Bear see you
-        if (_seePlayer)
+        if (_seePlayer && NPCState == NPCStateEnum.Active || NPCState == NPCStateEnum.Idle)
         {
+            if (NPCState == NPCStateEnum.Attacking) return;
             await Delay(1f);
             TransitionTo(NPCStateEnum.Aggressive,0);
         }
@@ -109,8 +110,6 @@ public class EnemyBehavior : NPC
 
     private void TransitionTo(NPCStateEnum next, float idleTime)
     {
-        NPCState = next;
-
         switch (next)
         {
             case NPCStateEnum.Idle: IdleState(idleTime); break;
@@ -119,6 +118,8 @@ public class EnemyBehavior : NPC
             case NPCStateEnum.Attacking: AttackingState(); break;
             case NPCStateEnum.Death: DeathState(); break;
         }
+
+        NPCState = next;
     }
 
 
@@ -175,19 +176,21 @@ public class EnemyBehavior : NPC
     }
     private void AggressiveState()
     {
+        if (NPCState == NPCStateEnum.Aggressive) return;
+        if (_animator.GetBool("isAttacking") == true) return;
+
         //disable unnecessary detection, vision can be heavy
-        //set parameter
         _visionBox.SetActive(false);
 
-        if (Agent.isActiveAndEnabled) 
-        {
+       
+         //set parameter
             Agent.stoppingDistance = _aggressiveStopDis;
             Agent.speed = _runSpeed;
             Agent.angularSpeed = _normalAngularSpeed;
 
-            //Old method is still useful, but use the new one, since it doens't search the player constantly
+           
              GetPlayerTargetAndChase();
-        }
+       
     }
 
     //AttackState should exit after Attack ended and go back to Aggressive or Active
@@ -246,11 +249,11 @@ public class EnemyBehavior : NPC
     private void ChaseTarget()
     {
         // Chase player within range limit, if out of range, go back to idle
-        if (Agent.isActiveAndEnabled && Target != null || Vector3.Distance(transform.position, Target.position) < PursuitRange)
+        if (Agent.isActiveAndEnabled && Target != null && Vector3.Distance(transform.position, Target.position) < PursuitRange)
         {
             Agent.SetDestination(Target.position);
         }
-        else if (Vector3.Distance(transform.position, Target.position) > PursuitRange)
+        else 
         {
             TransitionTo(NPCStateEnum.Idle, _idleTimeShort);
         }
@@ -258,7 +261,7 @@ public class EnemyBehavior : NPC
 
     private void GetPlayerTargetAndChase()
     {
-        if (Target == null ||  _targetPlayers.Count > 0)
+        if (Target != null ||  _targetPlayers.Count > 0)
         {
             Transform newTarget = _targetPlayers[0].gameObject.transform;
 
@@ -288,8 +291,12 @@ public class EnemyBehavior : NPC
 
         return finalPosition;
     }
-
-
+    //Make it trigger by animation
+    public void EnterAttackState()
+    {
+        TransitionTo(NPCStateEnum.Attacking,0);
+        Debug.Log("Is Attacking State");
+    }
 
     //Get player list from search to update target to Attack
     //Search at the end of transition from Attack>Aggressive or CountTime after x time without Attacking, if all player escaped from the detection range,bear will go back to Active Mode

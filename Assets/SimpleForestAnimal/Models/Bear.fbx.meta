@@ -365,6 +365,8 @@ ModelImporter:
     - CowRig/CowRig_SHJntGrp/CowRig_ROOTSHJnt/CowRig_Spine_01SHJnt/CowRig_Spine_02SHJnt/CowRig_Spine_03SHJnt/CowRig_Spine_TopSHJnt/CowRig_Neck_01SHJnt/CowRig_Neck_02SHJnt/CowRig_Neck_TopSHJnt/CowRig_Head_TopSHJnt
     - CowRig/CowRig_SHJntGrp/CowRig_ROOTSHJnt/CowRig_Spine_01SHJnt/CowRig_Spine_02SHJnt/CowRig_Spine_03SHJnt/CowRig_Spine_TopSHJnt/CowRig_r_Clavicle_01_01SHJnt/CowRig_r_FrontLeg_HipSHJnt/CowRig_r_FrontLeg_Knee1SHJnt/CowRig_r_FrontLeg_Knee2SHJnt/CowRig_r_FrontLeg_AnkleSHJnt
     - CowRig/CowRig_SHJntGrp/CowRig_ROOTSHJnt/CowRig_Spine_01SHJnt/CowRig_Spine_02SHJnt/CowRig_Spine_03SHJnt/CowRig_Spine_TopSHJnt/CowRig_l_Clavicle_01_01SHJnt/CowRig_l_FrontLeg_HipSHJnt/CowRig_l_FrontLeg_Knee1SHJnt/CowRig_l_FrontLeg_Knee2SHJnt/CowRig_l_FrontLeg_AnkleSHJnt
+    - CowRig
+    - CowRig/CowRig_SHJntGrp/CowRig_ROOTSHJnt
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16

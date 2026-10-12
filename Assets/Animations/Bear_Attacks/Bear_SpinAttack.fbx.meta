@@ -55,7 +55,35 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0
+        functionName: IsAttacking
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 3625dbc908e82cb43bdcd99bec9f2a50, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 1
+        functionName: NotAttacking
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 3625dbc908e82cb43bdcd99bec9f2a50, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.039824948
+        functionName: ActiveHitBox
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 3625dbc908e82cb43bdcd99bec9f2a50, type: 3}
+        floatParameter: 0
+        intParameter: 3
+        messageOptions: 0
+      - time: 0.9606128
+        functionName: DeactiveHitBox
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 3625dbc908e82cb43bdcd99bec9f2a50, type: 3}
+        floatParameter: 0
+        intParameter: 3
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7157619789374697382}
   - component: {fileID: 6480064374415932738}
   m_Layer: 11
-  m_Name: Enemy_Hurtbox
+  m_Name: Enemy_Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
