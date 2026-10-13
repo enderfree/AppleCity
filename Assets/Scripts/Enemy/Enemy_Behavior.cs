@@ -60,6 +60,7 @@ public class EnemyBehavior : NPC
         TransitionTo(NPCStateEnum.Idle, _idleTimeShort);
         _stateActiveTime = _stateActiveTimeLimit;
         _canAttack = true;
+        this.GetComponent<AudioSource>().PlayOneShot(_bearNoise);
 
     }
 
