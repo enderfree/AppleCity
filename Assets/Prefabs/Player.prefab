@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 5053375536854271695}
   - component: {fileID: 5666068405453505484}
   - component: {fileID: 2996251739507861756}
+  - component: {fileID: 2802774076609929839}
   - component: {fileID: 1178955826480325783}
   - component: {fileID: 4647600847793295846}
   - component: {fileID: 4529441181639694979}
@@ -69,7 +70,7 @@ Transform:
   m_GameObject: {fileID: 2107980596810229147}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.49, y: 35, z: -14.16}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -151,6 +152,21 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &2802774076609929839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107980596810229147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4cc59cb84a9b6641a8a25731bd32722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerSpawn
+  ShowTopMostFoldoutHeaderGroup: 1
+  _position: {fileID: 0}
+  _spawnRange: 3
 --- !u!114 &1178955826480325783
 MonoBehaviour:
   m_ObjectHideFlags: 0
