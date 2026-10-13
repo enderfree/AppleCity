@@ -11,11 +11,21 @@ public class Character: NetworkBehaviour, IHitable
     [SerializeField] private float _weightCapacity;
     [SerializeField] private float _carriedWeight;
     // removed _equipment as we now have a script dedicated to the inventory
+    [Header("Sound")]
+    [SerializeField] private AudioSource _player;
+    [SerializeField] private AudioClip _hitSoundClip;
+    [SerializeField] private float _volume = 0.2f;
 
     // Interface Members
     public virtual void OnHit(float damage)
     {
         HP -= damage;
+        PlaySound(_hitSoundClip);
+    }
+
+    public virtual void PlaySound(AudioClip clip)
+    {
+        this.GetComponent<AudioSource>().PlayOneShot(clip, _volume);
     }
 
     // Getters and Setters

@@ -45,9 +45,8 @@ public class EnemyBehavior : NPC
     private bool _canAttack = true;
 
     [Header("Sound")]
-    [SerializeField] private AudioSource _audioPlayer;
     [SerializeField] private AudioClip _bearNoise;
-
+    [SerializeField] private AudioClip _deathSound;
 
     private void Awake()
     {
@@ -60,7 +59,7 @@ public class EnemyBehavior : NPC
         TransitionTo(NPCStateEnum.Idle, _idleTimeShort);
         _stateActiveTime = _stateActiveTimeLimit;
         _canAttack = true;
-        this.GetComponent<AudioSource>().PlayOneShot(_bearNoise);
+        
 
     }
 
@@ -225,12 +224,28 @@ public class EnemyBehavior : NPC
         _canAttack = true;
     }
 
-    private void DeathState()
+    private async Task DeathState()
     {
         if (!IsServer) return;
 
-
+        StopNavAgent();
+        this.GetComponent<AudioSource>().PlayOneShot(_deathSound);
+        await Delay(2f);
         NetworkObject.Despawn();
+    }
+
+    public override void OnHit(float damage)
+    {
+        base.OnHit(damage);
+
+        if (HP > 0)
+        {
+            TransitionTo(NPCStateEnum.Aggressive, 0);
+        }
+        else if (HP <= 0)
+        {
+            TransitionTo(NPCStateEnum.Death, 0);
+        }
     }
 
     //Navemesh Functions

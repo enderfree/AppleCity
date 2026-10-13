@@ -2228,6 +2228,8 @@ MonoBehaviour:
   _hp: 75
   _weightCapacity: 500
   _carriedWeight: 500
+  _player: {fileID: 0}
+  _hitSoundClip: {fileID: 8300000, guid: 585f108cd9f7dba48aae8a7a2e6ed0d6, type: 3}
   _npcState: 0
   _target: {fileID: 0}
   _agent: {fileID: 6355913677144079175}
@@ -2250,7 +2252,6 @@ MonoBehaviour:
   _targetPlayers: []
   _attackAnimDuration: 0
   _attackCooldown: 1
-  _audioPlayer: {fileID: 4205583395519646361, guid: ede1054aaca0b3747a644f30067079a7, type: 3}
   _bearNoise: {fileID: 8300000, guid: 7823fa286217f884cb308e373cdd95e9, type: 3}
 --- !u!114 &4971687075674710267
 MonoBehaviour:

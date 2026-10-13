@@ -9,6 +9,8 @@ public class NPC: Character
     [SerializeField] private NavMeshAgent _agent;
 
     // Getters and Setters
+
+
     public virtual NPCStateEnum NPCState
     {
         get
