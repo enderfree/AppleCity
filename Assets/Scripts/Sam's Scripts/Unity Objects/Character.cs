@@ -16,11 +16,6 @@ public class Character: NetworkBehaviour, IHitable
     public virtual void OnHit(float damage)
     {
         HP -= damage;
-
-        if (HP <= 0f)
-        {
-            Debug.Log("We should implement a gameover screen");
-        }
     }
 
     // Getters and Setters
@@ -57,6 +52,15 @@ public class Character: NetworkBehaviour, IHitable
         set
         {
             _hp = value;
+
+            if (_hp < 0f)
+            {
+                _hp = 0f;
+            }
+            else if (_hp > MaxHP)
+            {
+                _hp = MaxHP;
+            }
         }
     }
 

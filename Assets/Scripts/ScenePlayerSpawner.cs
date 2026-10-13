@@ -92,6 +92,11 @@ public class ScenePlayerSpawner : MonoBehaviour
             spawnPoint.transform.rotation
         );
 
+        if (TryGetComponent<PlayerStats>(out PlayerStats playerStats))
+        {
+            playerStats._respawnPoint = destination;
+        }
+
         if (controller != null)
         {
             controller.enabled = true;
