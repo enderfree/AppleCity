@@ -67774,7 +67774,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.4
-    functionName: Generate_TestApple
+    functionName: AnimationThrow
     data: 
     objectReferenceParameter: {fileID: 11500000, guid: 40fc7d7ead9c0c14aa0c0cb1b9ae39ef, type: 3}
     floatParameter: 0

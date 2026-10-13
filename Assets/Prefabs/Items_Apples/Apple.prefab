@@ -9,16 +9,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 64.1031
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 36.474
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.46949
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
       propertyPath: m_LocalRotation.w
@@ -63,6 +75,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4f7127a80ddc57745bc3b2f946fd2f62, type: 3}
+      propertyPath: m_TagString
+      value: Apple
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -162,10 +178,10 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   m_InScenePlaced: 0
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  ActiveSceneSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
+  DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
@@ -230,7 +246,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
   UseRigidBodyForMotion: 1
-  AutoUpdateKinematicState: 0
+  AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 0
 --- !u!114 &3682587304903227112
 MonoBehaviour:
@@ -244,12 +260,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fba349ba1d897b747a6919760b647ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AppleBase
+  ShowTopMostFoldoutHeaderGroup: 1
   _itemName: Apple
   _itemType: 0
   _description: 'An apple. '
   _weigth: 1
   _maxDurability: 20
   _durability: 20
+  _prompt: {fileID: 0}
+  _defaultAppleID: 0
   _appleType: 0
   _damage: 2
 --- !u!96 &223659584785798860

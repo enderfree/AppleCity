@@ -52,7 +52,6 @@ GameObject:
   - component: {fileID: 6414669962989271884}
   - component: {fileID: 856478279412836305}
   - component: {fileID: -5146531129236005318}
-  - component: {fileID: 495829295415285609}
   - component: {fileID: 3608844500181027768}
   m_Layer: 8
   m_Name: Player
@@ -76,6 +75,7 @@ Transform:
   m_Children:
   - {fileID: 6281683948615969286}
   - {fileID: 6672472948840114783}
+  - {fileID: 3572875203915791704}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &5053375536854271695
@@ -91,7 +91,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1024
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
@@ -294,6 +294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6d8a4f5699dee941b1d22313c22c189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Character
+  ShowTopMostFoldoutHeaderGroup: 1
   _charName: Player
   _maxHP: 100
   _hp: 100
@@ -422,19 +423,6 @@ MonoBehaviour:
   _layer:
     serializedVersion: 2
     m_Bits: 2577
---- !u!114 &495829295415285609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2107980596810229147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbe83dbc36aa4c248a3e2c3687d39b77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &3608844500181027768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,6 +439,7 @@ MonoBehaviour:
   _throwPoint: {fileID: 8145591538906735403}
   _theApple: {fileID: 0}
   _netApple: {fileID: 0}
+  _pick: {fileID: 7946475205590554102}
   _currentThrowForce: 2
   _normalForce: 1
   _chargeForceCurve:
@@ -480,9 +469,75 @@ MonoBehaviour:
   _chargedForce: 0
   _chargedTime: 0
   _animator: {fileID: 5666068405453505484}
-  _crosshair: {fileID: 0}
-  _testThrow: {fileID: 152639687054188983, guid: 09de80b5dceaf834d8e2357c404dd728, type: 3}
   _testNetApple: {fileID: 6185195755693620985, guid: 9d74db31d5ddb5f48b1912bec3d74dac, type: 3}
+--- !u!1 &2454707090842712606
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3572875203915791704}
+  - component: {fileID: 3020184578527864609}
+  - component: {fileID: 7946475205590554102}
+  m_Layer: 8
+  m_Name: ApplePickupSphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3572875203915791704
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2454707090842712606}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.372, z: 0.659}
+  m_LocalScale: {x: 1.7929982, y: 1.7929982, z: 1.7929982}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4177033306499711002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &3020184578527864609
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2454707090842712606}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 1024
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2871
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7946475205590554102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2454707090842712606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be22e1898c765e349bcac0bc1f5ea58d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ApplePIckup
+  ShowTopMostFoldoutHeaderGroup: 1
+  _appleList: []
 --- !u!1 &3095728505589292683
 GameObject:
   m_ObjectHideFlags: 0

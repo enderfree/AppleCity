@@ -1,8 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Playables;
-using UnityEngine.UIElements;
-using System.Threading.Tasks;
+
 
 public class Trolley_Interact : NetworkBehaviour
 {
@@ -33,6 +31,16 @@ public class Trolley_Interact : NetworkBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
+        DetectPlayer(other);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        _detectedPlayer = null;
+    }
+
+    private void DetectPlayer(Collider other)
+    {
         if (other.gameObject.CompareTag("Player") && _detectedPlayer != null)
         {
             _havePlayer = true;
@@ -51,12 +59,8 @@ public class Trolley_Interact : NetworkBehaviour
         {
             _havePlayer = false;
 
-        } 
-    }
+        }
 
-    private void OnTriggerExit(Collider other)
-    {
-        _detectedPlayer = null;
     }
 
     private void DelayClearInfo()
@@ -69,6 +73,7 @@ public class Trolley_Interact : NetworkBehaviour
                _playerState.GetTrolleyRef(null, null, null, null);
         }
     }
+
 
 
 }

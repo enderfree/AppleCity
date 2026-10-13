@@ -57,8 +57,6 @@ public class EnemySearchDetection : NetworkBehaviour
     }
     private void RemovePlayerToList(Collider col)
     {
-        if (col.gameObject.CompareTag("Player"))
-        {
             if (col.gameObject.CompareTag("Player"))
             {
                 var list = new List<GameObject>(_getPlayerList);
@@ -66,7 +64,6 @@ public class EnemySearchDetection : NetworkBehaviour
                 list.Remove(col.gameObject);
                 _getPlayerList = list;
             }
-        }
     }
 
     private async void ActiveTime()

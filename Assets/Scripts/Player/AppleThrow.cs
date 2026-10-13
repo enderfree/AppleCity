@@ -6,76 +6,94 @@ using UnityEngine.UIElements;
 
 public class AppleThrow : NetworkBehaviour
 {
-    [Header("Camera")]
+    //Camera
     private TPSPlayerCamera _camera;
-
+    private Vector3 _targetPoint => _camera.ReadRayEndPoint;
+    private Vector3 _throwDirection;
 
     [Header("Apple")]
     //Ref this under the throw hand skeleton, so the apple will always spawn from the hand and targeting crosshair (end point)
     [SerializeField] private Transform _throwPoint;
-    [SerializeField] private GameObject _theApple;
     [SerializeField] private NetworkObject _netApple;
-    //Change rb ref from netapple.gameObject and remove _theApple since NetworkObject should replace it
+   // [SerializeField] private NetworkVariable<NetworkObject> _netApples = new NetworkVariable<NetworkObject>(null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     private Rigidbody _appleRB;
-    private Vector3 _targetPoint => _camera.ReadRayEndPoint;
-    private Vector3 _throwDirection;
+
+
+    [Header("Apple Interact")]
+    [SerializeField] private ApplePIckup _pick;
+    [SerializeField] private NetworkVariable<bool> _haveApple = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [Header("Throw Force")]
     //Apple are around 0.15 weight, throw force min/max look good around 2-8
     [SerializeField] private float _currentThrowForce;
     [SerializeField] private float _normalForce;
     [SerializeField] private AnimationCurve _chargeForceCurve;
-    [SerializeField] private float _chargedForce;
-    [SerializeField] private float _chargedTime = 0;
-    //execute safety
-    // private bool _isThrown;
-
+     private float _chargedForce;
+     private float _chargedTime = 0;
 
     [Header("Input")]
-    // no longer need them, until I need them
-    // private bool _throwIsPressed;
     private bool _isAiming;
     private bool _isCharging;
 
-    [Header("Animator")]
-    [SerializeField] private Animator _animator;
-    [SerializeField] private GameObject _crosshair;
+    //ref
+    private Animator _animator;
+    private GameObject _crosshair;
 
-    [Header("Debug")]
-    [SerializeField] private GameObject _testThrow;
-    [SerializeField] private NetworkObject _testNetApple;
-
-    private void Awake()
-    {
-        _camera = GetComponent<TPSPlayerCamera>();
-    }
 
     public override void OnNetworkSpawn()
     {
+        _camera = GetComponent<TPSPlayerCamera>();
+        _animator = GetComponent<Animator>();
         _crosshair = GameObject.Find("UI/Canvas (UI)/Gameplay UI/MainGameView/Crosshair_parent");
     }
 
     private void Update()
     {
+         
+
         if (!IsOwner) return;
         //Player Input
         LeftButtonIsPressed();
         RightButtonIsPressed();
+        InteractWithApple();
+
     }
     private void LateUpdate()
     {
+        SnapAppleToHand();
         if (!IsOwner) return;
 
         _camera.ReadisAimLazyVersion(_isAiming);
+        
+
     }
 
+    public void AnimationThrow()
+    {
+            ThrowServerRpc(ThrowDirection(), _currentThrowForce);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ThrowServerRpc(Vector3 direction, float force, RpcParams rpcParams = default)
+    {
+        //safety check just in case the apple is not synced online, if not, weird nullref or nothing happens happen.
+        if (_netApple == null || !_netApple.IsSpawned) return;
+
+        Throw(direction, force);
+    }
 
     private void Throw(Vector3 direction, float force)
     {
-        _appleRB.isKinematic = false;
+        if (!IsServer) return;
+        if ( _netApple == null) return;
+
+        //Reset apple quaternion to make sure it is going to the right position
+        _netApple.gameObject.transform.rotation = Quaternion.identity;
+        AppleRBPhysicBool(true);
         _appleRB.AddForce(direction * force, ForceMode.Impulse);
 
         ClearAppleComponent();
+        ResetThrowForce();
     }
 
     private Vector3 ThrowDirection()
@@ -98,6 +116,7 @@ public class AppleThrow : NetworkBehaviour
     {
         _currentThrowForce = _normalForce;
         _chargedTime = 0;
+        _haveApple.Value = false;
     }
 
     //Player key Input
@@ -115,18 +134,14 @@ public class AppleThrow : NetworkBehaviour
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            //_throwIsPressed = true;
-
-
             //Short of time, animator is here for now and let animation event handle the throw
             _animator.SetTrigger("Throw");
+            if (_haveApple.Value) 
+            {
+               
+            }
             //Reset time and throw force
             ChargingAddThrowForce();
-
-        }
-        else
-        {
-            // _throwIsPressed = false;
         }
     }
 
@@ -146,68 +161,71 @@ public class AppleThrow : NetworkBehaviour
 
     //Apple Function
 
-    private void GetAppleComponent()
+    private void InteractWithApple()
     {
-        _theApple = _netApple.gameObject;
-
-        if (_theApple != null)
+        if (_pick.AppleList.Count > 0 && !_haveApple.Value)
         {
-            _appleRB = _theApple.GetComponent<Rigidbody>();
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                //PickUpAnApple();
+                PickUpAppleServerRPC();
+            }
         }
     }
 
+    [ServerRpc]
+    private void PickUpAppleServerRPC()
+    {
+        PickUpAnApple();
+    }
+
+    private void PickUpAnApple()
+    {
+        if (_pick.AppleList.Count > 0 && !_haveApple.Value)
+        {
+            _netApple = _pick.AppleList[0];
+            
+            GetAppleComponent();
+            
+        }
+    }
+    private void GetAppleComponent()
+    {
+        if (!IsServer) return;
+
+        _haveApple.Value = true;
+
+        if (_netApple != null)
+        {
+            _appleRB = _netApple.GetComponent<Rigidbody>();
+            AppleRBPhysicBool(false);
+        }
+    }
+
+    private void AppleRBPhysicBool(bool boolean)
+    {
+        //Kinematic and disable detectCollision to avoid apple pushing the player away
+        _appleRB.isKinematic = !boolean;
+        _appleRB.detectCollisions = boolean;
+    }
+
+    private void SnapAppleToHand()
+    {
+        if (_netApple != null)
+        {
+            _netApple.gameObject.transform.position = _throwPoint.position;
+        }
+    }
+
+
+
     private void ClearAppleComponent()
     {
-        _theApple = null;
         _appleRB = null;
-    }
-
-    private void GenerateApple(GameObject apple)
-    {
-        //Thats Local version only
-        _theApple = Instantiate(apple, _throwPoint.position, _throwPoint.rotation);
+        _netApple = null;
     }
 
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void GenerateAppleServerRpc(RpcParams rpcParams = default)
-    {
-        // _theApple = Instantiate(apple, _throwPoint.position, _throwPoint.rotation);
-        //   var netApple = _theApple.GetComponent<NetworkObject>();
-        // netApple.Spawn();
-        ulong _playerId = rpcParams.Receive.SenderClientId;
-
-        _netApple = NetworkManager.SpawnManager.InstantiateAndSpawn(_testNetApple, _playerId, true, true, false, _throwPoint.position, _throwPoint.rotation);
 
 
-        // This is the basic way, More way to spawn
-        //https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.5/manual/basics/object-spawning.html
-    }
-
-
-    [ContextMenu("Debug: Generate Test Apple")]
-    public void Generate_TestApple()
-    {
-        //This Function is the entire process of Throwing an Apple on Local, More modification require for Network:
-        //1.Generate apple from Debug > Replace this part with actual pulling out apple from inventory.
-        // Inventory is abolished, pick up apple that are already on field and they follow the player
-        GenerateAppleServerRpc();
-
-        //2.Get the require information to throw the apple and set Kinematic to false, since it is true by default after generating and the apple will stay on air.
-        // Client Fail to get component, but server have it.
-        // I tried request server to generate > client get component. Then Get Components() run faster than client get it, result Null ref errors.
-        // Try move throw script to Apple itself and execute it from server side directly without referencing anything from this script
-        // Or instantiate the apple when player press 1-4 to select the apple, so there are no ref delay issue.
-        GetAppleComponent();
-
-        //3.Throw apple with current direction and force.
-        Throw(ThrowDirection(),_currentThrowForce);
-
-        //4.Reset parameters before throwing next apple.
-        ResetThrowForce();
-    }
-
-    [ContextMenu("Debug: Test Throw")]
-
-    public void TestThrow() => Throw(ThrowDirection(), _currentThrowForce);
 }

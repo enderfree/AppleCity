@@ -111,11 +111,9 @@ public class Trolley_Script : NetworkBehaviour
     {
         ulong senderId = rpcParams.Receive.SenderClientId;
 
-        
         if (!NetworkManager.Singleton.ConnectedClients.TryGetValue(senderId, out var client)) return;
 
         GameObject getPilot = client.PlayerObject.gameObject;
-
 
         PlayerInteract(getPilot);
     }
@@ -153,6 +151,8 @@ public class Trolley_Script : NetworkBehaviour
                 _pilotInput = null;
                 _pilotState = null;
             }
+
+
         }
     }
 
