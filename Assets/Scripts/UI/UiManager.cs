@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 public class UiManager : MonoBehaviour
 {
     public static UiManager Instance { get; private set; }
@@ -11,6 +12,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject _inventoryPanel;
     [SerializeField] private GameObject _gameplayUI;
     [SerializeField] private GameObject _backgroundIMG;
+    [SerializeField] private Slider _hpBar;
 
 
     private void Awake()
@@ -20,6 +22,16 @@ public class UiManager : MonoBehaviour
     void Start()
     {
         ChangeTabState();
+    }
+
+    private void OnEnable()
+    {
+        PlayerStats.OnHPChanged += OnHPChanged;
+    }
+
+    private void OnDisable()
+    {
+        PlayerStats.OnHPChanged -= OnHPChanged;
     }
 
     private void Update()
@@ -92,6 +104,11 @@ public class UiManager : MonoBehaviour
         _settings.SetActive(setting);
         _inventoryPanel.SetActive(inventory);
         
+    }
+
+    private void OnHPChanged(float hpValue)
+    {
+        _hpBar.value = hpValue;
     }
 
     //Functions for UI buttons

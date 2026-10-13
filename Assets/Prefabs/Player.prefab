@@ -46,13 +46,13 @@ GameObject:
   - component: {fileID: 1178955826480325783}
   - component: {fileID: 4647600847793295846}
   - component: {fileID: 4529441181639694979}
-  - component: {fileID: -7936782681767733980}
   - component: {fileID: 4691049962705353319}
   - component: {fileID: 1828308896570368536}
   - component: {fileID: 6414669962989271884}
   - component: {fileID: 856478279412836305}
   - component: {fileID: -5146531129236005318}
   - component: {fileID: 3608844500181027768}
+  - component: {fileID: 7255955704871107236}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -282,24 +282,6 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
---- !u!114 &-7936782681767733980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2107980596810229147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6d8a4f5699dee941b1d22313c22c189, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Character
-  ShowTopMostFoldoutHeaderGroup: 1
-  _charName: Player
-  _maxHP: 100
-  _hp: 100
-  _weightCapacity: 10
-  _carriedWeight: 0
 --- !u!114 &4691049962705353319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,9 +419,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AppleThrow
   ShowTopMostFoldoutHeaderGroup: 1
   _throwPoint: {fileID: 8145591538906735403}
-  _theApple: {fileID: 0}
   _netApple: {fileID: 0}
   _pick: {fileID: 7946475205590554102}
+  _haveApple:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
   _currentThrowForce: 2
   _normalForce: 1
   _chargeForceCurve:
@@ -466,10 +452,24 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _chargedForce: 0
-  _chargedTime: 0
-  _animator: {fileID: 5666068405453505484}
-  _testNetApple: {fileID: 6185195755693620985, guid: 9d74db31d5ddb5f48b1912bec3d74dac, type: 3}
+--- !u!114 &7255955704871107236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107980596810229147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f862023c5d39d83438d8670dfc8ad5e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  ShowTopMostFoldoutHeaderGroup: 1
+  _charName: Player
+  _maxHP: 100
+  _hp: 100
+  _weightCapacity: 10
+  _carriedWeight: 0
 --- !u!1 &2454707090842712606
 GameObject:
   m_ObjectHideFlags: 0
