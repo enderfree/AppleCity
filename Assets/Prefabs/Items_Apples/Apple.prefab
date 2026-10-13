@@ -271,6 +271,11 @@ MonoBehaviour:
   _defaultAppleID: 0
   _appleType: 0
   _damage: 2
+  _contactExclusionLayers:
+  - serializedVersion: 2
+    m_Bits: 512
+  - serializedVersion: 2
+    m_Bits: 1024
 --- !u!96 &223659584785798860
 TrailRenderer:
   serializedVersion: 4

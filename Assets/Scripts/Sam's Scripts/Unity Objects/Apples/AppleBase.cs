@@ -1,6 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class AppleBase: Item, IThrowable
 {
@@ -10,6 +11,9 @@ public class AppleBase: Item, IThrowable
     [SerializeField] private int _defaultAppleID;
     [SerializeField] private AppleTypeEnum _appleType;
     [SerializeField] private float _damage;
+    [SerializeField] private List<LayerMask> _contactExclusionLayers;
+
+    private Rigidbody rb;
 
     // I don't like initializing outside of Awake, but took it from Josh and it works so I wont look further
     private readonly NetworkVariable<int> networkAppleID =
@@ -24,13 +28,14 @@ public class AppleBase: Item, IThrowable
     // Unity
     protected void OnCollisionEnter(Collision collision)
     {
-        // Debug.Log(collision.gameObject.name); // The number of bounces is low so not checking velocity should be fine
         OnImpact(collision);
     }
 
     // Josh
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
+
         if (_prompt != null)
         {
             _prompt.SetActive(false);
@@ -218,12 +223,20 @@ public class AppleBase: Item, IThrowable
 
     public virtual void OnImpact(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<IHitable>(out IHitable hitable))
+        if (_contactExclusionLayers.Contains(LayerMask.GetMask(LayerMask.LayerToName(collision.gameObject.layer))))
         {
-            hitable.OnHit(_damage);
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
+        else
+        {
+            if (collision.gameObject.TryGetComponent<IHitable>(out IHitable hitable))
+            {
+                hitable.OnHit(_damage);
+            }
 
-        OnHit(1f);
+            OnHit(1f);
+        }
     }
 
     // Getters and Setters
