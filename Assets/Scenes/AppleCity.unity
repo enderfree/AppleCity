@@ -1588,6 +1588,7 @@ MonoBehaviour:
   _gameplayUI: {fileID: 282418006}
   _backgroundIMG: {fileID: 72776043}
   _hpBar: {fileID: 5877811229424373459}
+  _hpText: {fileID: 5877811229424373460}
 --- !u!4 &423815845 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4022441193017059987, guid: 04358fbc16f6b464ab525749566f3621, type: 3}
@@ -10347,6 +10348,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
+--- !u!114 &5877811229424373460 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1703872639901496750, guid: 4be0c10a6719b144aaa437af8d058003, type: 3}
+  m_PrefabInstance: {fileID: 5877811229424373458}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
