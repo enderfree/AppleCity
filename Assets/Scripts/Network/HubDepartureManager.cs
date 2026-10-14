@@ -294,7 +294,7 @@ public class HubDepartureManager : NetworkBehaviour
 
             playerCount++;
 
-            if (player.IsReady.Value)
+            if (player._isReady.Value)
             {
                 readyCount++;
             }

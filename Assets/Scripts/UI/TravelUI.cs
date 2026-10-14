@@ -112,7 +112,7 @@ public class TravelUI : MonoBehaviour
             return "NOT READY";
         }
 
-        return departurePlayer.IsReady.Value
+        return departurePlayer._isReady.Value
             ? "READY"
             : "NOT READY";
     }

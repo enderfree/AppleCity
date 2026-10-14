@@ -3,23 +3,34 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// This is handling player options and ststus related to HubDepartureManager
+/// </summary>
 public class HubDeparturePlayer : NetworkBehaviour
 {
-    public NetworkVariable<bool> IsReady =
+    // if the player is ready for the game to start or not
+    public NetworkVariable<bool> _isReady =
         new NetworkVariable<bool>(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
 
-    private bool insideDepartureZone;
-    private bool waitingForServer;
+    // if the player is inside of the departure zone 
+    // (unreadies you if you leave the departure zone)
+    private bool _insideDepartureZone;
 
+    // if this is waiting for an answer from the server
+    private bool _waitingForServer;
+
+    /// <summary>
+    /// I'm not actually sure what this is. I think it is from NetworkBehavior and triggers when things NGOspawn, but I'm not sure why Josh subscribe to events here...
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
-            IsReady.OnValueChanged += OnReadyChanged;
+            _isReady.OnValueChanged += OnReadyChanged;
 
             SceneManager.activeSceneChanged +=
                 OnActiveSceneChanged;
@@ -32,11 +43,14 @@ public class HubDeparturePlayer : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// I'm guessing this is another NetworkBehavior function... it looks to work in pair with the otherone I'm not sure of above...
+    /// </summary>
     public override void OnNetworkDespawn()
     {
         if (IsOwner)
         {
-            IsReady.OnValueChanged -= OnReadyChanged;
+            _isReady.OnValueChanged -= OnReadyChanged;
 
             SceneManager.activeSceneChanged -=
                 OnActiveSceneChanged;
@@ -50,11 +64,23 @@ public class HubDeparturePlayer : NetworkBehaviour
                 OnServerActiveSceneChanged;
         }
 
-        insideDepartureZone = false;
-        waitingForServer = false;
+        _insideDepartureZone = false;
+        _waitingForServer = false;
     }
 
+    /// <summary>
+    /// Josh never used unity character controller to make the char and inputs are all over the place, 
+    /// so we never had the time to basically redo the whole character (although both me and Jun tried)
+    /// </summary>
     private void Update()
+    {
+        ReadInput();
+    }
+
+    /// <summary>
+    /// Check if player is readying
+    /// </summary>
+    private void ReadInput()
     {
         /*
          * Only the locally-owned Player reads input.
@@ -64,12 +90,12 @@ public class HubDeparturePlayer : NetworkBehaviour
             return;
         }
 
-        if (!insideDepartureZone)
+        if (!_insideDepartureZone)
         {
             return;
         }
 
-        if (waitingForServer)
+        if (_waitingForServer)
         {
             return;
         }
@@ -85,9 +111,9 @@ public class HubDeparturePlayer : NetworkBehaviour
         }
 
         bool requestedReadyState =
-            !IsReady.Value;
+            !_isReady.Value;
 
-        waitingForServer = true;
+        _waitingForServer = true;
 
         Debug.Log(
             requestedReadyState
@@ -98,6 +124,9 @@ public class HubDeparturePlayer : NetworkBehaviour
         SetReadyRpc(requestedReadyState);
     }
 
+    /// <summary>
+    /// Handles what happen when player enters the departure zone
+    /// </summary>
     public void EnterDepartureZone()
     {
         if (!IsOwner)
@@ -105,17 +134,20 @@ public class HubDeparturePlayer : NetworkBehaviour
             return;
         }
 
-        insideDepartureZone = true;
+        _insideDepartureZone = true;
 
         RefreshDepartureTooltip();
 
         Debug.Log(
-            IsReady.Value
+            _isReady.Value
                 ? "Departure Zone: Press E to cancel Ready."
                 : "Departure Zone: Press E when ready to leave."
         );
     }
 
+    /// <summary>
+    /// Handles what happen when player exits the departure zone
+    /// </summary>
     public void ExitDepartureZone()
     {
         if (!IsOwner)
@@ -123,7 +155,7 @@ public class HubDeparturePlayer : NetworkBehaviour
             return;
         }
 
-        insideDepartureZone = false;
+        _insideDepartureZone = false;
 
         InteractionTooltipUI.Instance?.Hide();
 
@@ -131,10 +163,10 @@ public class HubDeparturePlayer : NetworkBehaviour
          * If the player walks away after becoming Ready,
          * automatically cancel their Ready state.
          */
-        if (IsReady.Value &&
-            !waitingForServer)
+        if (_isReady.Value &&
+            !_waitingForServer)
         {
-            waitingForServer = true;
+            _waitingForServer = true;
 
             Debug.Log(
                 "Leaving Departure Zone. " +
@@ -145,6 +177,11 @@ public class HubDeparturePlayer : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// This seems to be handling the player per player readying
+    /// </summary>
+    /// <param name="ready">is this player ready or not</param>
+    /// <param name="rpcParams">not sure, Josh does not seem to provide custum ones ever</param>
     [Rpc(SendTo.Server)]
     private void SetReadyRpc(
         bool ready,
@@ -167,7 +204,7 @@ public class HubDeparturePlayer : NetworkBehaviour
             return;
         }
 
-        IsReady.Value = ready;
+        _isReady.Value = ready;
 
         Debug.Log(
             $"SERVER: Player {OwnerClientId} Ready = {ready}"
@@ -180,11 +217,16 @@ public class HubDeparturePlayer : NetworkBehaviour
             .EvaluateReadyPlayers();
     }
 
+    /// <summary>
+    /// What to do when players become ready or someone unreadies
+    /// </summary>
+    /// <param name="previousValue">not sure</param>
+    /// <param name="newValue">not sure</param>
     private void OnReadyChanged(
         bool previousValue,
         bool newValue)
     {
-        waitingForServer = false;
+        _waitingForServer = false;
 
         if (!IsOwner)
         {
@@ -201,7 +243,7 @@ public class HubDeparturePlayer : NetworkBehaviour
          * Immediately update the Synty tooltip if the
          * player is still standing inside the zone.
          */
-        if (insideDepartureZone)
+        if (_insideDepartureZone)
         {
             RefreshDepartureTooltip();
         }
@@ -211,10 +253,13 @@ public class HubDeparturePlayer : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Refreshes the tooltip
+    /// </summary>
     private void RefreshDepartureTooltip()
     {
         if (!IsOwner ||
-            !insideDepartureZone)
+            !_insideDepartureZone)
         {
             return;
         }
@@ -222,7 +267,7 @@ public class HubDeparturePlayer : NetworkBehaviour
         bool isForest =
             SceneManager.GetActiveScene().name == "AppleForest";
 
-        if (IsReady.Value)
+        if (_isReady.Value)
         {
             InteractionTooltipUI.Instance?.Show(
                 isForest
@@ -244,6 +289,11 @@ public class HubDeparturePlayer : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// what to do when the scene changes
+    /// </summary>
+    /// <param name="previousScene">the previous scene</param>
+    /// <param name="newScene">the scene you're going to</param>
     private void OnActiveSceneChanged(
         Scene previousScene,
         Scene newScene)
@@ -259,8 +309,8 @@ public class HubDeparturePlayer : NetworkBehaviour
          *
          * Always clear local state here.
          */
-        insideDepartureZone = false;
-        waitingForServer = false;
+        _insideDepartureZone = false;
+        _waitingForServer = false;
 
         InteractionTooltipUI.Instance?.Hide();
 
@@ -270,6 +320,11 @@ public class HubDeparturePlayer : NetworkBehaviour
         );
     }
 
+    /// <summary>
+    /// what to do server-side when the scene changes
+    /// </summary>
+    /// <param name="previousScene">the previous scene</param>
+    /// <param name="newScene">the scene you're going to</param>
     private void OnServerActiveSceneChanged(
         Scene previousScene,
         Scene newScene)
@@ -285,9 +340,9 @@ public class HubDeparturePlayer : NetworkBehaviour
          *
          * Reset it after every scene change.
          */
-        if (IsReady.Value)
+        if (_isReady.Value)
         {
-            IsReady.Value = false;
+            _isReady.Value = false;
         }
 
         Debug.Log(
