@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 public class UiManager : MonoBehaviour
 {
     public static UiManager Instance { get; private set; }
@@ -13,6 +14,7 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject _gameplayUI;
     [SerializeField] private GameObject _backgroundIMG;
     [SerializeField] private Slider _hpBar;
+    [SerializeField] private TMP_Text _hpText;
 
 
     private void Awake()
@@ -109,6 +111,7 @@ public class UiManager : MonoBehaviour
     private void OnHPChanged(float hpValue)
     {
         _hpBar.value = hpValue;
+        _hpText.text = hpValue.ToString();
     }
 
     //Functions for UI buttons
