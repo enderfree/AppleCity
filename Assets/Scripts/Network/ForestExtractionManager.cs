@@ -3,7 +3,8 @@ using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
-/// This is all the logic used in the ready system... the actual going from the city to the forest is managed by NetworkSceneChanger
+/// This is all the logic used in the ready system... the actual going from the forest to the city is managed by NetworkSceneChanger
+/// This should not even exist... that's all duplicated of HubDepartureManager! Sadly, I don't have the time to find all references anf fix it
 /// </summary>
 public class ForestExtractionManager : NetworkBehaviour
 {

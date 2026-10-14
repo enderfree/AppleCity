@@ -2,54 +2,69 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// This is all the logic used in the ready system... the actual going from the city to the forest is managed by NetworkSceneChanger
+/// </summary>
 public class HubDepartureManager : NetworkBehaviour
 {
+    // static reference to this manager
     public static HubDepartureManager Instance { get; private set; }
 
     [Header("Scene Change")]
+    // the class in charge of changing the scene to another
     [SerializeField]
-    private NetworkSceneChanger sceneChanger;
+    private NetworkSceneChanger _sceneChanger;
 
     [Header("Departure")]
+    // delay time before the scene change and after the countdown is over
     [SerializeField]
-    private float departureDelay = 3f;
+    private float _departureDelay = 3f;
 
-    public NetworkVariable<int> ReadyPlayers =
+    // number of players ready
+    public NetworkVariable<int> _readyPlayers =
         new NetworkVariable<int>(
             0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
 
-    public NetworkVariable<int> ConnectedPlayers =
+    // number of players connected
+    public NetworkVariable<int> _connectedPlayers =
         new NetworkVariable<int>(
             0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
 
-    public NetworkVariable<bool> DepartureCountdownActive =
+    // if the countdown is currently counting down or not
+    public NetworkVariable<bool> _departureCountdownActive =
         new NetworkVariable<bool>(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
 
-    private Coroutine departureRoutine;
-    private bool sceneChangeStarted;
+    // The coroutine in which the scene change and countdown are happening
+    private Coroutine _departureRoutine;
 
+    // if the scene change has begun or not
+    private bool _sceneChangeStarted;
+
+    /// <summary>
+    /// Handles new people connecting to the server
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         Instance = this;
 
-        DepartureCountdownActive.OnValueChanged +=
+        _departureCountdownActive.OnValueChanged +=
             OnDepartureCountdownChanged;
 
         /*
          * Apply current state for late-spawning clients.
          */
         ApplyDepartureCountdownUI(
-            DepartureCountdownActive.Value
+            _departureCountdownActive.Value
         );
 
         if (!IsServer)
@@ -66,9 +81,12 @@ public class HubDepartureManager : NetworkBehaviour
         EvaluateReadyPlayers();
     }
 
+    /// <summary>
+    /// Handles people disconnecting from the server
+    /// </summary>
     public override void OnNetworkDespawn()
     {
-        DepartureCountdownActive.OnValueChanged -=
+        _departureCountdownActive.OnValueChanged -=
             OnDepartureCountdownChanged;
 
         TravelUI.Instance?.HideTransition();
@@ -91,6 +109,9 @@ public class HubDepartureManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Verifies if everyone is ready. 
+    /// </summary>
     public void EvaluateReadyPlayers()
     {
         if (!IsServer)
@@ -98,7 +119,7 @@ public class HubDepartureManager : NetworkBehaviour
             return;
         }
 
-        if (sceneChangeStarted)
+        if (_sceneChangeStarted)
         {
             return;
         }
@@ -108,8 +129,8 @@ public class HubDepartureManager : NetworkBehaviour
             out int readyCount
         );
 
-        ConnectedPlayers.Value = playerCount;
-        ReadyPlayers.Value = readyCount;
+        _connectedPlayers.Value = playerCount;
+        _readyPlayers.Value = readyCount;
 
         Debug.Log(
             $"SERVER: Ready Players = " +
@@ -126,31 +147,35 @@ public class HubDepartureManager : NetworkBehaviour
             return;
         }
 
-        if (departureRoutine != null)
+        if (_departureRoutine != null)
         {
             return;
         }
 
-        DepartureCountdownActive.Value = true;
+        _departureCountdownActive.Value = true;
 
-        departureRoutine =
+        _departureRoutine =
             StartCoroutine(
                 BeginDepartureRoutine()
             );
     }
 
+    /// <summary>
+    /// Arraganges everything to procede to the scene change
+    /// </summary>
+    /// <returns>a delay</returns>
     private IEnumerator BeginDepartureRoutine()
     {
         Debug.Log(
-            $"SERVER: All {ConnectedPlayers.Value} players " +
-            $"are Ready. Departure in {departureDelay:0.#} seconds."
+            $"SERVER: All {_connectedPlayers.Value} players " +
+            $"are Ready. Departure in {_departureDelay:0.#} seconds."
         );
 
         yield return new WaitForSeconds(
-            departureDelay
+            _departureDelay
         );
 
-        departureRoutine = null;
+        _departureRoutine = null;
 
         /*
          * Validate one more time immediately before
@@ -163,34 +188,37 @@ public class HubDepartureManager : NetworkBehaviour
                 "A player is no longer Ready."
             );
 
-            DepartureCountdownActive.Value = false;
+            _departureCountdownActive.Value = false;
 
             EvaluateReadyPlayers();
 
             yield break;
         }
 
-        if (sceneChanger == null)
+        if (_sceneChanger == null)
         {
             Debug.LogError(
                 "HubDepartureManager: " +
                 "NetworkSceneChanger is not assigned."
             );
 
-            DepartureCountdownActive.Value = false;
+            _departureCountdownActive.Value = false;
             yield break;
         }
 
-        sceneChangeStarted = true;
+        _sceneChangeStarted = true;
 
         Debug.Log(
             "SERVER: Everyone is still Ready. " +
             "Loading AppleForest."
         );
 
-        sceneChanger.LoadDestinationScene();
+        _sceneChanger.LoadDestinationScene();
     }
 
+    /// <summary>
+    /// Cancels the countdown
+    /// </summary>
     private void CancelDepartureCountdown()
     {
         if (!IsServer)
@@ -198,22 +226,26 @@ public class HubDepartureManager : NetworkBehaviour
             return;
         }
 
-        if (departureRoutine != null)
+        if (_departureRoutine != null)
         {
-            StopCoroutine(departureRoutine);
-            departureRoutine = null;
+            StopCoroutine(_departureRoutine);
+            _departureRoutine = null;
 
             Debug.Log(
                 "SERVER: Departure countdown cancelled."
             );
         }
 
-        if (DepartureCountdownActive.Value)
+        if (_departureCountdownActive.Value)
         {
-            DepartureCountdownActive.Value = false;
+            _departureCountdownActive.Value = false;
         }
     }
 
+    /// <summary>
+    /// Verifies that all players are ready
+    /// </summary>
+    /// <returns>If all players are ready or not</returns>
     private bool AreAllPlayersStillReady()
     {
         GetReadyCounts(
@@ -225,6 +257,11 @@ public class HubDepartureManager : NetworkBehaviour
                readyCount == playerCount;
     }
 
+    /// <summary>
+    /// Get how many players are ready
+    /// </summary>
+    /// <param name="playerCount">Number of player connected</param>
+    /// <param name="readyCount">Number of player ready</param>
     private void GetReadyCounts(
         out int playerCount,
         out int readyCount)
@@ -264,6 +301,11 @@ public class HubDepartureManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Progresses the countdown
+    /// </summary>
+    /// <param name="previousValue">I have no idea...</param>
+    /// <param name="newValue">I have no idea...</param>
     private void OnDepartureCountdownChanged(
         bool previousValue,
         bool newValue)
@@ -271,6 +313,10 @@ public class HubDepartureManager : NetworkBehaviour
         ApplyDepartureCountdownUI(newValue);
     }
 
+    /// <summary>
+    /// show the UI of people readying and the countdown when appropriate
+    /// </summary>
+    /// <param name="countdownActive">if the countdown is active or not</param>
     private void ApplyDepartureCountdownUI(
         bool countdownActive)
     {
@@ -286,16 +332,24 @@ public class HubDepartureManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Add the new client to the ready system when they connect
+    /// </summary>
+    /// <param name="clientId">the id of the client that just connected</param>
     private void OnClientConnected(
         ulong clientId)
     {
         EvaluateReadyPlayers();
     }
 
+    /// <summary>
+    /// Cancels the countdown if someone disconnects
+    /// </summary>
+    /// <param name="clientId">the id of the client that just disconnected</param>
     private void OnClientDisconnected(
         ulong clientId)
     {
-        if (departureRoutine != null)
+        if (_departureRoutine != null)
         {
             CancelDepartureCountdown();
         }
@@ -305,6 +359,10 @@ public class HubDepartureManager : NetworkBehaviour
         );
     }
 
+    /// <summary>
+    /// What the heck is that? Probably just a wrapper to run EvaluateReadyPlayers() as a coroutine, but what a name...
+    /// </summary>
+    /// <returns>null</returns>
     private IEnumerator EvaluateNextFrame()
     {
         yield return null;
