@@ -2,16 +2,30 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// This is the manager managing spawn points
+/// </summary>
 public class ScenePlayerSpawner : MonoBehaviour
 {
     [Header("Spawn")]
+    // this is the GameObject marking spawn points
     [SerializeField]
-    private ScenePlayerSpawnPoint spawnPoint;
+    private ScenePlayerSpawnPoint _spawnPoint;
 
+    // players will spawn a bit above the spawn point by this amount
     [SerializeField]
-    private float spawnHeightOffset = 0.5f;
+    private float _spawnHeightOffset = 0.5f;
 
+    /// <summary>
+    /// Monobehavior's start... but again, IEnumerator?
+    /// </summary>
+    /// <returns>Innit() to get that stuff out of start()</returns>
     private IEnumerator Start()
+    {
+        return Innit();
+    }
+
+    private IEnumerator Innit()
     {
         /*
          * The dedicated server itself doesn't have a local player.
@@ -53,13 +67,13 @@ public class ScenePlayerSpawner : MonoBehaviour
             yield break;
         }
 
-        if (spawnPoint == null)
+        if (_spawnPoint == null)
         {
-            spawnPoint =
+            _spawnPoint =
                 FindFirstObjectByType<ScenePlayerSpawnPoint>();
         }
 
-        if (spawnPoint == null)
+        if (_spawnPoint == null)
         {
             Debug.LogError(
                 "ScenePlayerSpawner: No ScenePlayerSpawnPoint found."
@@ -72,8 +86,8 @@ public class ScenePlayerSpawner : MonoBehaviour
             playerObject.transform;
 
         Vector3 destination =
-            spawnPoint.transform.position +
-            Vector3.up * spawnHeightOffset;
+            _spawnPoint.transform.position +
+            Vector3.up * _spawnHeightOffset;
 
         /*
          * If the player uses a CharacterController,
@@ -89,7 +103,7 @@ public class ScenePlayerSpawner : MonoBehaviour
 
         playerTransform.SetPositionAndRotation(
             destination,
-            spawnPoint.transform.rotation
+            _spawnPoint.transform.rotation
         );
 
         if (TryGetComponent<PlayerStats>(out PlayerStats playerStats))
