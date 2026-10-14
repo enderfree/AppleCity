@@ -1,12 +1,18 @@
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// The refresh rate mode options of our game
+/// </summary>
 public enum RefreshRateMode 
 { 
     CustomFrameRate, 
     VSync
 }
 
+/// <summary>
+/// A framerate optimisation script Jun found online
+/// </summary>
 public class FrameRate : MonoBehaviour
 {
     /// <summary>
@@ -19,15 +25,23 @@ public class FrameRate : MonoBehaviour
     /// </summary>
 
 
-    
+    // the refresh rate mode to use
     [SerializeField] private RefreshRateMode _mode;
+
+    // the target framerate of our game
     [SerializeField] private int _frameRate = 120;
 
+    /// <summary>
+    /// Monobehavior's Awake()
+    /// </summary>
     private void Awake()
     {
         InitiateRefreshMode();
     }
 
+    /// <summary>
+    /// setup the game based on the desired refresh mode
+    /// </summary>
     private void InitiateRefreshMode()
     {
         if (_mode == RefreshRateMode.VSync) 
@@ -42,6 +56,9 @@ public class FrameRate : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Context menu option that let us call InitiateRefreshMode() while testing stuff
+    /// </summary>
     [ContextMenu("Debug: Update Changes")]
     public void DebugModeOnChanged() => InitiateRefreshMode();
 
