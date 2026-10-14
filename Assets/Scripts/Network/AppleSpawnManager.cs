@@ -2,23 +2,46 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Code that spawns the apples for the network... NGO has its own defenition of spawn...
+/// NB. This is one of Josh's scripts. I modified it a bit to be able to make it work with our new apple, 
+/// but I can't pretend I understand it at 100%. 
+/// </summary>
 public class AppleSpawnManager : MonoBehaviour
 {
     [Header("Apple")]
+    // NGO accepts NetworkBehavior as a prefab...
     [SerializeField]
-    private AppleBase applePrefab;
+    private AppleBase _applePrefab;
 
     [Header("Spawn Points")]
+    // the places where apple spawns. The location itself is marked by a GameObjects.
     [SerializeField]
-    private Transform spawnPointsRoot;
+    private Transform _spawnPointsRoot;
 
     [Header("Startup")]
+    // A small wait time before spawning the apples... I am not sure why and Joshua is not here to explain it to me...
     [SerializeField]
-    private float initialSpawnDelay = 0.25f;
+    private float _initialSpawnDelay = 0.25f;
 
-    private bool hasSpawned;
+    // If the apple has spawned or not... I'm pretty sure this should not be global, but I don't have time to reformat everything and test rn...
+    private bool _hasSpawned;
 
+    /// <summary>
+    /// MonoBehavior's Start()? I think... Why is it IEnumerator?
+    /// </summary>
+    /// <returns>Innit() to take the initialization out of Start()</returns>
     private IEnumerator Start()
+    {
+        return Innit();
+    }
+
+    /// <summary>
+    /// ok... I'm not exactly sure what's happening in there, but from Josh's comments, 
+    /// I believes it waits for NGO before checking if this is server or client and then make apples?
+    /// </summary>
+    /// <returns>a delay</returns>
+    private IEnumerator Innit()
     {
         /*
          * Wait until NGO is actually running.
@@ -39,24 +62,27 @@ public class AppleSpawnManager : MonoBehaviour
             yield break;
         }
 
-        if (initialSpawnDelay > 0f)
+        if (_initialSpawnDelay > 0f)
         {
             yield return new WaitForSeconds(
-                initialSpawnDelay
+                _initialSpawnDelay
             );
         }
 
         SpawnApples();
     }
 
+    /// <summary>
+    /// Spawns apples at the spawn points
+    /// </summary>
     private void SpawnApples()
     {
-        if (hasSpawned)
+        if (_hasSpawned)
         {
             return;
         }
 
-        if (applePrefab == null)
+        if (_applePrefab == null)
         {
             Debug.LogError(
                 "AppleSpawnManager: Apple prefab is not assigned."
@@ -65,7 +91,7 @@ public class AppleSpawnManager : MonoBehaviour
             return;
         }
 
-        if (spawnPointsRoot == null)
+        if (_spawnPointsRoot == null)
         {
             Debug.LogError(
                 "AppleSpawnManager: Spawn Points Root is not assigned."
@@ -75,7 +101,7 @@ public class AppleSpawnManager : MonoBehaviour
         }
 
         AppleSpawnPoint[] spawnPoints =
-            spawnPointsRoot.GetComponentsInChildren<AppleSpawnPoint>(
+            _spawnPointsRoot.GetComponentsInChildren<AppleSpawnPoint>(
                 true
             );
 
@@ -88,7 +114,7 @@ public class AppleSpawnManager : MonoBehaviour
             return;
         }
 
-        hasSpawned = true;
+        _hasSpawned = true;
 
         foreach (AppleSpawnPoint spawnPoint in spawnPoints)
         {
@@ -100,6 +126,10 @@ public class AppleSpawnManager : MonoBehaviour
         );
     }
 
+    /// <summary>
+    /// This is called in a loop by SpawnApples to spawn singular apples where they belong. 
+    /// </summary>
+    /// <param name="spawnPoint">The GameObject thet will carry the apple</param>
     private void SpawnApple(
         AppleSpawnPoint spawnPoint)
     {
@@ -110,7 +140,7 @@ public class AppleSpawnManager : MonoBehaviour
 
         AppleBase apple =
             Instantiate(
-                applePrefab,
+                _applePrefab,
                 spawnPoint.transform.position,
                 spawnPoint.transform.rotation
             );
