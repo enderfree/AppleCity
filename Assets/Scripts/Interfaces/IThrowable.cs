@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/// <summary>
+/// Interface telling that this is something that can be thrown...
+/// Due to time constraints, Throw is player-side only rn, but we did plan to have thrown items handle their trajectory
+/// in order to do stupid things like when you throw a crabapple it goes sideways
+/// </summary>
 public interface IThrowable
 {
     /// <summary>
