@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/AppleCity.unity
     guid: 06dd59a2946804b4eb6415be49512a40
   - enabled: 1
-    path: Assets/Scenes/AppleForest.unity
+    path: Assets/Scenes/AppleForest_Old.unity
     guid: 6ea9378e3056dfc4c8b9bc516d1cf9dd
   - enabled: 1
     path: Assets/Scenes/TestScene.unity
