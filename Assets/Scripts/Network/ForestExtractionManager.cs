@@ -2,51 +2,66 @@ using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// This is all the logic used in the ready system... the actual going from the city to the forest is managed by NetworkSceneChanger
+/// </summary>
 public class ForestExtractionManager : NetworkBehaviour
 {
+    // a static reference to this manager
     public static ForestExtractionManager Instance { get; private set; }
 
     [Header("Scene Change")]
+    // the class in charge of changing the scene to another
     [SerializeField]
-    private NetworkSceneChanger sceneChanger;
+    private NetworkSceneChanger _sceneChanger;
 
     [Header("Extraction")]
+    // delay before the logic actually starts (likely to let player back out last minute if needed)
     [SerializeField]
-    private float extractionDelay = 1f;
+    private float _extractionDelay = 1f;
 
-    public NetworkVariable<int> ReadyPlayers =
+    // The amout of players ready to start the game
+    public NetworkVariable<int> _readyPlayers =
         new NetworkVariable<int>(
             0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
 
-    public NetworkVariable<int> ConnectedPlayers =
+    // The ammount of players connected to the server
+    public NetworkVariable<int> _connectedPlayers =
         new NetworkVariable<int>(
             0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
 
-    public NetworkVariable<bool> ExtractionCountdownActive =
+    // if the countdown before game start is counting down rn
+    public NetworkVariable<bool> _extractionCountdownActive =
         new NetworkVariable<bool>(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
 
-    private Coroutine extractionRoutine;
-    private bool sceneChangeStarted;
+    // The coroutine in which the scene change and countdown are happening
+    private Coroutine _extractionRoutine;
 
+    // if the scene change has begun or not
+    private bool _sceneChangeStarted;
+
+    /// <summary>
+    /// Handles new people connecting to the server
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         Instance = this;
 
-        ExtractionCountdownActive.OnValueChanged +=
+        _extractionCountdownActive.OnValueChanged +=
             OnExtractionCountdownChanged;
 
         ApplyExtractionUI(
-            ExtractionCountdownActive.Value
+            _extractionCountdownActive.Value
         );
 
         if (!IsServer)
@@ -63,9 +78,12 @@ public class ForestExtractionManager : NetworkBehaviour
         EvaluateReadyPlayers();
     }
 
+    /// <summary>
+    /// Handles people disconnecting from the server
+    /// </summary>
     public override void OnNetworkDespawn()
     {
-        ExtractionCountdownActive.OnValueChanged -=
+        _extractionCountdownActive.OnValueChanged -=
             OnExtractionCountdownChanged;
 
         TravelUI.Instance?.HideTransition();
@@ -88,6 +106,9 @@ public class ForestExtractionManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Verifies if everyone is ready. 
+    /// </summary>
     public void EvaluateReadyPlayers()
     {
         if (!IsServer)
@@ -95,7 +116,7 @@ public class ForestExtractionManager : NetworkBehaviour
             return;
         }
 
-        if (sceneChangeStarted)
+        if (_sceneChangeStarted)
         {
             return;
         }
@@ -105,8 +126,8 @@ public class ForestExtractionManager : NetworkBehaviour
             out int readyCount
         );
 
-        ConnectedPlayers.Value = playerCount;
-        ReadyPlayers.Value = readyCount;
+        _connectedPlayers.Value = playerCount;
+        _readyPlayers.Value = readyCount;
 
         Debug.Log(
             $"SERVER: Extraction Ready Players = " +
@@ -123,32 +144,36 @@ public class ForestExtractionManager : NetworkBehaviour
             return;
         }
 
-        if (extractionRoutine != null)
+        if (_extractionRoutine != null)
         {
             return;
         }
 
-        ExtractionCountdownActive.Value = true;
+        _extractionCountdownActive.Value = true;
 
-        extractionRoutine =
+        _extractionRoutine =
             StartCoroutine(
                 BeginExtractionRoutine()
             );
     }
 
+    /// <summary>
+    /// Arraganges everything to procede to the scene change
+    /// </summary>
+    /// <returns>a delay</returns>
     private IEnumerator BeginExtractionRoutine()
     {
         Debug.Log(
-            $"SERVER: All {ConnectedPlayers.Value} players " +
+            $"SERVER: All {_connectedPlayers.Value} players " +
             $"are ready to extract. Extraction in " +
-            $"{extractionDelay:0.#} seconds."
+            $"{_extractionDelay:0.#} seconds."
         );
 
         yield return new WaitForSeconds(
-            extractionDelay
+            _extractionDelay
         );
 
-        extractionRoutine = null;
+        _extractionRoutine = null;
 
         /*
          * Validate again immediately before extraction.
@@ -160,34 +185,37 @@ public class ForestExtractionManager : NetworkBehaviour
                 "A player is no longer ready."
             );
 
-            ExtractionCountdownActive.Value = false;
+            _extractionCountdownActive.Value = false;
 
             EvaluateReadyPlayers();
 
             yield break;
         }
 
-        if (sceneChanger == null)
+        if (_sceneChanger == null)
         {
             Debug.LogError(
                 "ForestExtractionManager: " +
                 "NetworkSceneChanger is not assigned."
             );
 
-            ExtractionCountdownActive.Value = false;
+            _extractionCountdownActive.Value = false;
             yield break;
         }
 
-        sceneChangeStarted = true;
+        _sceneChangeStarted = true;
 
         Debug.Log(
             "SERVER: Everyone is still ready. " +
             "Extracting to AppleCity."
         );
 
-        sceneChanger.LoadDestinationScene();
+        _sceneChanger.LoadDestinationScene();
     }
 
+    /// <summary>
+    /// Cancels the countdown
+    /// </summary>
     private void CancelExtractionCountdown()
     {
         if (!IsServer)
@@ -195,22 +223,26 @@ public class ForestExtractionManager : NetworkBehaviour
             return;
         }
 
-        if (extractionRoutine != null)
+        if (_extractionRoutine != null)
         {
-            StopCoroutine(extractionRoutine);
-            extractionRoutine = null;
+            StopCoroutine(_extractionRoutine);
+            _extractionRoutine = null;
 
             Debug.Log(
                 "SERVER: Extraction countdown cancelled."
             );
         }
 
-        if (ExtractionCountdownActive.Value)
+        if (_extractionCountdownActive.Value)
         {
-            ExtractionCountdownActive.Value = false;
+            _extractionCountdownActive.Value = false;
         }
     }
 
+    /// <summary>
+    /// Verifies that all players are ready
+    /// </summary>
+    /// <returns>If all players are ready or not</returns>
     private bool AreAllPlayersStillReady()
     {
         GetReadyCounts(
@@ -222,6 +254,11 @@ public class ForestExtractionManager : NetworkBehaviour
                readyCount == playerCount;
     }
 
+    /// <summary>
+    /// Get how many players are ready
+    /// </summary>
+    /// <param name="playerCount">Number of player connected</param>
+    /// <param name="readyCount">Number of player ready</param>
     private void GetReadyCounts(
         out int playerCount,
         out int readyCount)
@@ -261,6 +298,11 @@ public class ForestExtractionManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Progresses the countdown
+    /// </summary>
+    /// <param name="previousValue">I have no idea...</param>
+    /// <param name="newValue">I have no idea...</param>
     private void OnExtractionCountdownChanged(
         bool previousValue,
         bool newValue)
@@ -268,6 +310,10 @@ public class ForestExtractionManager : NetworkBehaviour
         ApplyExtractionUI(newValue);
     }
 
+    /// <summary>
+    /// show the UI of people readying and the countdown when appropriate
+    /// </summary>
+    /// <param name="countdownActive">if the countdown is active or not</param>
     private void ApplyExtractionUI(
         bool countdownActive)
     {
@@ -283,16 +329,24 @@ public class ForestExtractionManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Add the new client to the ready system when they connect
+    /// </summary>
+    /// <param name="clientId">the id of the client that just connected</param>
     private void OnClientConnected(
         ulong clientId)
     {
         EvaluateReadyPlayers();
     }
 
+    /// <summary>
+    /// Cancels the countdown if someone disconnects
+    /// </summary>
+    /// <param name="clientId">the id of the client that just disconnected</param>
     private void OnClientDisconnected(
         ulong clientId)
     {
-        if (extractionRoutine != null)
+        if (_extractionRoutine != null)
         {
             CancelExtractionCountdown();
         }
@@ -302,6 +356,10 @@ public class ForestExtractionManager : NetworkBehaviour
         );
     }
 
+    /// <summary>
+    /// What the heck is that? Probably just a wrapper to run EvaluateReadyPlayers() as a coroutine, but what a name...
+    /// </summary>
+    /// <returns>null</returns>
     private IEnumerator EvaluateNextFrame()
     {
         yield return null;

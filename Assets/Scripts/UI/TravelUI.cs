@@ -77,8 +77,8 @@ public class TravelUI : MonoBehaviour
                 return;
             }
 
-            ready = manager.ReadyPlayers.Value;
-            connected = manager.ConnectedPlayers.Value;
+            ready = manager._readyPlayers.Value;
+            connected = manager._connectedPlayers.Value;
         }
         else
         {
