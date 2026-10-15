@@ -10,50 +10,102 @@ public class EnemyBehavior : NPC
     //HP and other parameters are handled by parent classes
     //Changes: 1. HP parameter should be handled with SyncVar 2. Character GrandParent should be networkBehavior to make everything online
 
-  
-     private Animator _animator;
+    // the animator
+    private Animator _animator;
 
     [Header("Navmesh/Navigation AI")]
+    // speed when idle
     [SerializeField] private float _IdleSpeed = 0f;
+
+    // speed when walking
     [SerializeField] private float _walkSpeed = 4f;
+
+    // speed when running
     [SerializeField] private float _runSpeed = 30f;
+
+    // range in which the enemy chases
     [SerializeField] private float _pursuitRange = 50f;
+
+    // at which distance does the idle state stop
     [SerializeField] private float _idleStopDis = 0f;
+
+    // at which distance does the aggressive state stop
     [SerializeField] private float _aggressiveStopDis = 2f;
+
+    // velocity
     [SerializeField] private float _normalAngularSpeed = 500f;
+
+    // transition state time
     [SerializeField] private float _idleTime = 7f;
+
+    // short transition time
     [SerializeField] private float _idleTimeShort = 2f;
 
     //Random point and compare currentposition to designated position to decide whenever it should go Idle or choose a new point
     [SerializeField] private float _searchMinRadius = 30f,_searchMaxRadius = 200f ;
+
+    // last known position
     [SerializeField] private Vector3 _recordedPosition;
 
-    //Bear kinda need a rest too if being active for too long
+    //Bear kinda need a rest too if being active for too long  // cool -SF
     [SerializeField] private float _stateActiveTime;
+
+    // sadly rests have limits too
     [SerializeField] private float _stateActiveTimeLimit = 60f;
 
     [Header("Player Detection")]
+    // enemy vision box
     [SerializeField] private GameObject _visionBox;
+
+    // where the enemy searches
     [SerializeField] private GameObject _searchBox;
+
+    // view component
     private EnemyViewDetection _vision;
+
+    // if the enemy sees the player
     private bool _seePlayer => _vision._readSawPlayer;
+
+    // list of players
     [SerializeField] private List<GameObject> _targetPlayers;
 
     [Header("Attack State")]
+    // duration of the attack animation
     [SerializeField] private float _attackAnimDuration;
+
+    // cooldown between attacks
     [SerializeField] private float _attackCooldown = 1.1f;
+
+    // if the enemy can attack right now
     private bool _canAttack = true;
 
     [Header("Sound")]
+    // the sound of a bear
     [SerializeField] private AudioClip _bearNoise;
+
+    // the sound of a dying bear
     [SerializeField] private AudioClip _deathSound;
 
+    /// <summary>
+    /// Initialise on Awake()
+    /// </summary>
     private void Awake()
+    {
+        Innit();
+    }
+
+    /// <summary>
+    /// Get some components
+    /// </summary>
+    private void Innit()
     {
         _animator = GetComponent<Animator>();
         _vision = _visionBox.GetComponent<EnemyViewDetection>();
     }
 
+    /// <summary>
+    /// setup a few more things when the enemy is enabled
+    /// </summary>
     private void OnEnable()
     {
         TransitionTo(NPCStateEnum.Idle, _idleTimeShort);
@@ -63,6 +115,9 @@ public class EnemyBehavior : NPC
 
     }
 
+    /// <summary>
+    /// update the enemy
+    /// </summary>
     private void FixedUpdate()
     {
         if (!IsServer) return;
@@ -71,7 +126,9 @@ public class EnemyBehavior : NPC
     }
 
     
-
+    /// <summary>
+    /// Enemy logic
+    /// </summary>
     private async void BehaviourLogic()
     {
         // Bear see you
@@ -107,7 +164,11 @@ public class EnemyBehavior : NPC
     }
 
     //Enemy State
-
+    /// <summary>
+    /// manages state transitions
+    /// </summary>
+    /// <param name="next">selected state</param>
+    /// <param name="idleTime">if state id idle, for how long do you stay idle</param>
     private void TransitionTo(NPCStateEnum next, float idleTime)
     {
         switch (next)
@@ -122,7 +183,10 @@ public class EnemyBehavior : NPC
         NPCState = next;
     }
 
-
+    /// <summary>
+    /// handles the idle state
+    /// </summary>
+    /// <param name="idleTime">for how long it stays idle</param>
     private async void IdleState(float idleTime)
     {
         //Set state parameters
@@ -145,7 +209,9 @@ public class EnemyBehavior : NPC
 
     }
 
-    // Go back to Idle when It is super close to the destination
+    /// <summary>
+    /// Go back to Idle when It is super close to the destination
+    /// </summary>
     private void CheckPatrolProgress()
     {
         if (!Agent.pathPending && Agent.remainingDistance <= Agent.stoppingDistance)
@@ -153,6 +219,10 @@ public class EnemyBehavior : NPC
             TransitionTo(NPCStateEnum.Idle, _idleTime);
         }
     }
+
+    /// <summary>
+    /// walk around
+    /// </summary>
     private void ActiveState()
     {
         //Set state parameters
@@ -174,6 +244,10 @@ public class EnemyBehavior : NPC
 
         
     }
+
+    /// <summary>
+    /// looks for a fight
+    /// </summary>
     private void AggressiveState()
     {
         if (NPCState == NPCStateEnum.Aggressive) return;
@@ -195,6 +269,9 @@ public class EnemyBehavior : NPC
 
     //AttackState should exit after Attack ended and go back to Aggressive or Active
     //New script for Attack Patterns
+    /// <summary>
+    /// handles the attack
+    /// </summary>
     private async void AttackingState()
     {
         _canAttack = false;
@@ -224,6 +301,9 @@ public class EnemyBehavior : NPC
         _canAttack = true;
     }
 
+    /// <summary>
+    /// dying is harder than one would think
+    /// </summary>
     private async Task DeathState()
     {
         if (!IsServer) return;
@@ -234,6 +314,10 @@ public class EnemyBehavior : NPC
         NetworkObject.Despawn();
     }
 
+    /// <summary>
+    /// become aggressive on hit unless it's a lethal hit
+    /// </summary>
+    /// <param name="damage">how much damage is recieved</param>
     public override void OnHit(float damage)
     {
         base.OnHit(damage);
@@ -249,19 +333,27 @@ public class EnemyBehavior : NPC
     }
 
     //Navemesh Functions
-
+    /// <summary>
+    /// stop the agent
+    /// </summary>
     public void StopNavAgent()
     {
         if (Agent.isActiveAndEnabled)
             Agent.isStopped = true;
     }
 
+    /// <summary>
+    /// restart the agent
+    /// </summary>
     public void RestartNavAgent()
     {
         if (Agent.isActiveAndEnabled)
             Agent.isStopped = false;
     }
 
+    /// <summary>
+    /// agent chase logic
+    /// </summary>
     private void ChaseTarget()
     {
         // Chase player within range limit, if out of range, go back to idle
@@ -275,6 +367,9 @@ public class EnemyBehavior : NPC
         }
     }
 
+    /// <summary>
+    /// manages which player is being chased
+    /// </summary>
     private void GetPlayerTargetAndChase()
     {
         if (Target != null ||  _targetPlayers.Count > 0)
@@ -287,6 +382,12 @@ public class EnemyBehavior : NPC
         ChaseTarget();
     }
 
+    /// <summary>
+    /// get a random location on the navmesh
+    /// </summary>
+    /// <param name="minRadius">how close the point is allowed to be</param>
+    /// <param name="maxRadius">how far the point is allowed to be</param>
+    /// <returns></returns>
     public Vector3 RandomNavmeshLocation(float minRadius, float maxRadius)
     {
         //Set a min-max radius and randomize the sphere unit to generate a random patrol point
@@ -307,21 +408,32 @@ public class EnemyBehavior : NPC
 
         return finalPosition;
     }
+
     //Make it trigger by animation
+    /// <summary>
+    /// Transition to attack state
+    /// </summary>
     public void EnterAttackState()
     {
         TransitionTo(NPCStateEnum.Attacking,0);
         Debug.Log("Is Attacking State");
     }
 
-    //Get player list from search to update target to Attack
-    //Search at the end of transition from Attack>Aggressive or CountTime after x time without Attacking, if all player escaped from the detection range,bear will go back to Active Mode
+    /// <summary>
+    /// //Get player list from search to update target to Attack
+    /// Search at the end of transition from Attack>Aggressive or CountTime after x time without Attacking, 
+    /// if all player escaped from the detection range,bear will go back to Active Mode
+    /// </summary>
     public void ActiveSearchBox()
     {
         _searchBox.gameObject.SetActive(true);
     }
 
     //This one is called from Search Detection
+    /// <summary>
+    /// Find next victim or roam
+    /// </summary>
+    /// <param name="list">the list of players</param>
     public void SearchPlayerList(List<GameObject> list)
     {
         _targetPlayers = list;
@@ -333,6 +445,10 @@ public class EnemyBehavior : NPC
         }
     }
 
+    /// <summary>
+    /// add people to the wanted list based on sight
+    /// </summary>
+    /// <param name="target">people</param>
     public void AddTargetOnSight(GameObject target)
     {
         if (!_targetPlayers.Contains(target))
@@ -345,12 +461,21 @@ public class EnemyBehavior : NPC
     //Async and Countdown utilities
 
     //Delay X second
+    /// <summary>
+    /// wait
+    /// </summary>
+    /// <param name="sec">nb of sec to wait</param>
+    /// <returns></returns>
     private async Task Delay(float sec)
     {
         await Awaitable.WaitForSecondsAsync(sec);
     }
 
-    //count any variable to 0
+    /// <summary>
+    /// count any variable to 0
+    /// </summary>
+    /// <param name="time">the time at which the countdown begins</param>
+    /// <returns>the remaining time to the countdown</returns>
     private float Countdown(float time)
     {
         time = Mathf.MoveTowards(time,0, Time.deltaTime);
@@ -396,7 +521,7 @@ public class EnemyBehavior : NPC
     }
 
     //Debug
-
+    // state transition debug commands
     [ContextMenu("Debug: Stanby")]
     public void StanbyTest() => TransitionTo(NPCStateEnum.Idle, _idleTime);
 
