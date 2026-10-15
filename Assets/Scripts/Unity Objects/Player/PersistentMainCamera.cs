@@ -1,28 +1,46 @@
 using UnityEngine;
 
+/// <summary>
+/// player camera
+/// </summary>
 public class PersistentMainCamera : MonoBehaviour
 {
-    private static PersistentMainCamera instance;
+    // static reference to this camera
+    private static PersistentMainCamera _instance;
 
+    /// <summary>
+    /// Innitalize on Awake()
+    /// </summary>
     private void Awake()
     {
-        if (instance != null &&
-            instance != this)
+        Innit();
+    }
+
+    /// <summary>
+    /// Innitialize the cam
+    /// </summary>
+    private void Innit()
+    {
+        if (_instance != null &&
+            _instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        instance = this;
+        _instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
 
+    /// <summary>
+    /// destrow this instance is the cemera GameObject is destroyed
+    /// </summary>
     private void OnDestroy()
     {
-        if (instance == this)
+        if (_instance == this)
         {
-            instance = null;
+            _instance = null;
         }
     }
 }
