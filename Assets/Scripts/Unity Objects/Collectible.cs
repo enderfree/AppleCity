@@ -1,20 +1,23 @@
 
 using UnityEngine;
 
+/// <summary>
+/// Script handling the lore
+/// </summary>
 public class Collectible : MonoBehaviour
 {
-    [SerializeField] private GameObject noteUI;
+    [SerializeField] private GameObject _noteUI;
 
     private void Start()
     {
-        noteUI.SetActive(false);
+        _noteUI.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            noteUI.SetActive(true);
+            _noteUI.SetActive(true);
         }
     }
 
@@ -22,7 +25,7 @@ public class Collectible : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            noteUI.SetActive(false);
+            _noteUI.SetActive(false);
         }
     }
 }

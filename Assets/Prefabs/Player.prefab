@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerSpawn
   ShowTopMostFoldoutHeaderGroup: 1
-  _position: {fileID: 0}
+  _position: {fileID: 4177033306499711002}
   _spawnRange: 3
 --- !u!114 &1178955826480325783
 MonoBehaviour:
@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HubDeparturePlayer
   ShowTopMostFoldoutHeaderGroup: 1
-  IsReady:
+  _isReady:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
@@ -316,9 +316,9 @@ MonoBehaviour:
   _playerPrefab: {fileID: 2107980596810229147}
   _movementScript: {fileID: 6414669962989271884}
   _trolleyInput: {fileID: 856478279412836305}
-  _playerNetworkObject: {fileID: 0}
-  _trolleyPrefab: {fileID: 0}
-  _trolleyScript: {fileID: 0}
+  _playerNetworkObject: {fileID: 2996251739507861756}
+  _trolleyPrefab: {fileID: 4602805939215481613, guid: 04358fbc16f6b464ab525749566f3621, type: 3}
+  _trolleyScript: {fileID: 7039568391295312994, guid: 04358fbc16f6b464ab525749566f3621, type: 3}
   _interact: {fileID: 0}
   _pilotPosition: {fileID: 0}
 --- !u!114 &1828308896570368536
@@ -333,8 +333,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d2f1daf7c13e2488c3a238c91f6578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimplePlayerAnimation
-  animator: {fileID: 5666068405453505484}
-  speedDeltaTimeMultiplier: 16
+  _animator: {fileID: 5666068405453505484}
+  _speedDeltaTimeMultiplier: 1
 --- !u!114 &6414669962989271884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,27 +348,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  walkSpeed: 5
-  runSpeed: 8
-  crouchSpeed: 2.5
-  targetSpeed: 4
-  slideSpeed: 10
-  slideDuration: 0.7
-  turnSpeed: 10
-  jumpHeight: 2
+  _walkSpeed: 4
+  _runSpeed: 8
+  _crouchSpeed: 2.5
+  _targetSpeed: 4
+  _slideSpeed: 10
+  _slideDuration: 0.7
+  _turnSpeed: 10
+  _jumpHeight: 1.5
   _gravityMultiplier: 1.3
-  animator: {fileID: 5666068405453505484}
-  IsCrouching:
+  _animator: {fileID: 5666068405453505484}
+  _isCrouching:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
-  IsSliding:
+  _isSliding:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
-  IsTargeting:
+  _isTargeting:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
@@ -416,7 +416,7 @@ MonoBehaviour:
   _aimHeight: 0.7
   _aimSide: 0.6
   _isAiming: 0
-  playerCamera: {fileID: 0}
+  _playerCamera: {fileID: 0}
   _rayEndPoint: {x: 0, y: 0, z: 0}
   _maxDistance: 50
   _layer:
