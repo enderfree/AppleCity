@@ -3,87 +3,143 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The logic that handles player movement
+/// </summary>
 public class SimplePlayerMovement : NetworkBehaviour
 {
-    [SerializeField] private float walkSpeed = 4f;
-    [SerializeField] private float runSpeed = 8f;
-    [SerializeField] private float crouchSpeed = 2.5f;
-    [SerializeField] private float targetSpeed = 4f;
+    // the spped at which the player walks
+    [SerializeField] private float _walkSpeed = 4f;
 
-    [SerializeField] private float slideSpeed = 10f;
-    [SerializeField] private float slideDuration = 0.7f;
+    // the speed at which the player runs
+    [SerializeField] private float _runSpeed = 8f;
 
-    [SerializeField] private float turnSpeed = 10f;
-    [SerializeField] private float jumpHeight = 1.5f;
+    // how fast the player moves when crouching
+    [SerializeField] private float _crouchSpeed = 2.5f;
+
+    // the speed at which the player goes while aiming
+    [SerializeField] private float _targetSpeed = 4f;
+
+    // the speed at which the player slides
+    [SerializeField] private float _slideSpeed = 10f;
+
+    // how long does a slide last
+    [SerializeField] private float _slideDuration = 0.7f;
+
+    // the speed at which the player can turn
+    [SerializeField] private float _turnSpeed = 10f;
+
+    // how high the player can jump
+    [SerializeField] private float _jumpHeight = 1.5f;
+
+    // how much push back do you get from gravity
     [SerializeField] private float _gravityMultiplier = 1.2f;
 
+    // if the player can jump right now
     private bool _canJump = true;
+
+    // if the ^player can double jump right now
     private bool _canDoubleJump = true;
     
+    // the player's animator
+    [SerializeField] private Animator _animator;
 
-    [SerializeField] private Animator animator;
+    // the player's character controller
+    private CharacterController _controller;
 
-    private CharacterController controller;
+    // the current going up or down speed
+    private float _verticalSpeed;
 
-    private float verticalSpeed;
-    private float slideTimer;
+    // timer for the slide
+    private float _slideTimer;
 
-    private Vector3 slideDirection;
+    // in which direction are you sliding
+    private Vector3 _slideDirection;
 
+    /// <summary>
+    /// public accessor for the target
+    /// </summary>
     public Transform Target { get; private set; }
 
-    public NetworkVariable<bool> IsCrouching =
+    // is the player currently crouching
+    public NetworkVariable<bool> _isCrouching =
+        new NetworkVariable<bool>(
+            false,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+    
+    // is the player currently sliding
+    public NetworkVariable<bool> _isSliding =
         new NetworkVariable<bool>(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
 
-    public NetworkVariable<bool> IsSliding =
+    // is the player currently aiming
+    public NetworkVariable<bool> _isTargeting =
         new NetworkVariable<bool>(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
 
-    public NetworkVariable<bool> IsTargeting =
-        new NetworkVariable<bool>(
-            false,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner
-        );
-
+    /// <summary>
+    /// Innitialize on Awake();
+    /// </summary>
     private void Awake()
     {
-        controller = GetComponent<CharacterController>();
+        Innit();
     }
 
-    private void Update()
+    /// <summary>
+    /// get some components
+    /// </summary>
+    private void Innit()
+    {
+        _controller = GetComponent<CharacterController>();
+    }
+
+    /// <summary>
+    /// Josh put input detection and movement together in Update() and I don't have the time to untangel that, 
+    /// but I've moved it to FixedUpdate in the hope it helps with performance
+    /// </summary>
+    private void FixedUpdate()
+    {
+        HandleInputs();
+    }
+
+    /// <summary>
+    /// Manages most movement options... I say most because we don't have a centralized place for inputs
+    /// because that's how Josh does things and we couldn't just hunt all of them to redo them with the time we had
+    /// </summary>
+    private void HandleInputs()
     {
         if (!IsOwner)
             return;
 
         bool isLanding =
-            animator.GetCurrentAnimatorStateInfo(0).IsName("Land") ||
-            animator.GetNextAnimatorStateInfo(0).IsName("Land");
+            _animator.GetCurrentAnimatorStateInfo(0).IsName("Land") ||
+            _animator.GetNextAnimatorStateInfo(0).IsName("Land");
 
         // Targeting
         if (Keyboard.current.tabKey.wasPressedThisFrame &&
             !isLanding &&
-            !IsSliding.Value)
+            !_isSliding.Value)
         {
-            if (IsTargeting.Value) { }
+            if (_isTargeting.Value) { }
             //  StopTargeting();
             else { }
-              //  FindTarget();
+            //  FindTarget();
         }
 
-        if (IsTargeting.Value && Target == null)
+        if (_isTargeting.Value && Target == null)
         { } //StopTargeting();
 
         Vector2 input = Vector2.zero;
 
-        if (!IsSliding.Value)
+        if (!_isSliding.Value)
         {
             if (Keyboard.current.wKey.isPressed) input.y += 1;
             if (Keyboard.current.sKey.isPressed) input.y -= 1;
@@ -94,7 +150,7 @@ public class SimplePlayerMovement : NetworkBehaviour
         Vector3 movement;
 
         // Targeting movement
-        if (IsTargeting.Value && Target != null)
+        if (_isTargeting.Value && Target != null)
         {
             Vector3 forward =
                 Target.position - transform.position;
@@ -119,7 +175,7 @@ public class SimplePlayerMovement : NetworkBehaviour
                     Quaternion.Slerp(
                         transform.rotation,
                         targetRotation,
-                        turnSpeed * Time.deltaTime
+                        _turnSpeed * Time.deltaTime
                     );
             }
         }
@@ -154,89 +210,89 @@ public class SimplePlayerMovement : NetworkBehaviour
                     Quaternion.Slerp(
                         transform.rotation,
                         targetRotation,
-                        turnSpeed * Time.deltaTime
+                        _turnSpeed * Time.deltaTime
                     );
             }
         }
 
         bool isRunning =
-            !IsTargeting.Value &&
-            !IsCrouching.Value &&
+            !_isTargeting.Value &&
+            !_isCrouching.Value &&
             Keyboard.current.leftShiftKey.isPressed &&
             movement != Vector3.zero;
 
         // Crouch / Slide
         if (Keyboard.current.cKey.wasPressedThisFrame &&
-            controller.isGrounded &&
+            _controller.isGrounded &&
             !isLanding &&
-            !IsSliding.Value)
+            !_isSliding.Value)
         {
             // Slide only while running normally
             if (isRunning)
             {
-                IsCrouching.Value = true;
-                IsSliding.Value = true;
+                _isCrouching.Value = true;
+                _isSliding.Value = true;
 
-                slideDirection = movement.normalized;
-                slideTimer = slideDuration;
+                _slideDirection = movement.normalized;
+                _slideTimer = _slideDuration;
             }
             else
             {
                 // Works during normal movement AND targeting
-                IsCrouching.Value =
-                    !IsCrouching.Value;
+                _isCrouching.Value =
+                    !_isCrouching.Value;
             }
         }
 
         float speed;
 
-        if (IsSliding.Value)
+        if (_isSliding.Value)
         {
-            movement = slideDirection;
-            speed = slideSpeed;
+            movement = _slideDirection;
+            speed = _slideSpeed;
 
-            slideTimer -= Time.deltaTime;
+            _slideTimer -= Time.deltaTime;
 
-            if (slideTimer <= 0f)
+            if (_slideTimer <= 0f)
             {
-                IsSliding.Value = false;
+                _isSliding.Value = false;
             }
         }
-        else if (IsCrouching.Value)
+        else if (_isCrouching.Value)
         {
-            speed = crouchSpeed;
+            speed = _crouchSpeed;
         }
-        else if (IsTargeting.Value)
+        else if (_isTargeting.Value)
         {
-            speed = targetSpeed;
+            speed = _targetSpeed;
         }
         else if (isRunning)
         {
-            speed = runSpeed;
+            speed = _runSpeed;
         }
         else
         {
-            speed = walkSpeed;
+            speed = _walkSpeed;
         }
 
         // Gravity / Jump
-        if (controller.isGrounded)
+        if (_controller.isGrounded)
         {
-            verticalSpeed = -2f;
+            _verticalSpeed = -2f;
             _canDoubleJump = true;
 
             if (_canJump && Input.GetKeyDown(KeyCode.Space))
-            Jump();
+                Jump();
 
-            
+
         }
         else
         {
-            verticalSpeed += Physics.gravity.y * Time.deltaTime * _gravityMultiplier;
+            _verticalSpeed += Physics.gravity.y * Time.deltaTime * _gravityMultiplier;
 
-            if (_canDoubleJump && _canJump && Input.GetKeyDown(KeyCode.Space)) 
+            if (_canDoubleJump && _canJump && Input.GetKeyDown(KeyCode.Space))
             {
-                verticalSpeed = 0;
+                _verticalSpeed = 0;
 
                 Jump();
                 _canDoubleJump = false;
@@ -246,20 +302,26 @@ public class SimplePlayerMovement : NetworkBehaviour
         movement =
             movement.normalized * speed;
 
-        movement.y = verticalSpeed;
+        movement.y = _verticalSpeed;
 
-        controller.Move(
+        _controller.Move(
             movement * Time.deltaTime
         );
     }
 
+    /// <summary>
+    /// Handles the jump!
+    /// </summary>
     private void Jump()
     {
             JumpCooldown();
-            verticalSpeed = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
-            animator.SetTrigger("Jump");
+            _verticalSpeed = Mathf.Sqrt(_jumpHeight * -2f * Physics.gravity.y);
+            _animator.SetTrigger("Jump");
     }
 
+    /// <summary>
+    /// stop you from spamming jump
+    /// </summary>
     private async void JumpCooldown()
     {
         _canJump = false;
@@ -267,6 +329,11 @@ public class SimplePlayerMovement : NetworkBehaviour
         _canJump = true;
     }
 
+    /// <summary>
+    /// wait
+    /// </summary>
+    /// <param name="seconds">the number of seconds to wait for</param>
+    /// <returns></returns>
     private async Task Delay(float seconds)
     {
         await Awaitable.WaitForSecondsAsync(seconds);

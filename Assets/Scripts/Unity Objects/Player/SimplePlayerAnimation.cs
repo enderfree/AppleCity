@@ -122,17 +122,17 @@ public class SimplePlayerAnimation : MonoBehaviour
 
         _animator.SetBool(
             "IsCrouching",
-            _playerMovement.IsCrouching.Value
+            _playerMovement._isCrouching.Value
         );
 
         _animator.SetBool(
             "IsSliding",
-            _playerMovement.IsSliding.Value
+            _playerMovement._isSliding.Value
         );
 
         _animator.SetBool(
             "IsTargeting",
-            _playerMovement.IsTargeting.Value
+            _playerMovement._isTargeting.Value
         );
 
         _lastPosition =
