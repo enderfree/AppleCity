@@ -632,7 +632,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HubDepartureManager
   ShowTopMostFoldoutHeaderGroup: 1
-  _sceneChanger: {fileID: 0}
+  _sceneChanger: {fileID: 173295218}
   _departureDelay: 3
   _readyPlayers:
     UpdateTraits:
