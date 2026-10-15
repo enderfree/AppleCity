@@ -1,9 +1,17 @@
 using UnityEngine;
 
+/// <summary>
+/// This is the zone where characters must remain to ready
+/// </summary>
 public class ForestExtractionZone : MonoBehaviour
 {
-    private HubDeparturePlayer localPlayer;
+    // the local player's departure stats
+    private HubDeparturePlayer _localPlayer;
 
+    /// <summary>
+    /// register that the player is in the departure zone if they are what collided
+    /// </summary>
+    /// <param name="other">what collided with this</param>
     private void OnTriggerEnter(Collider other)
     {
         HubDeparturePlayer player =
@@ -19,7 +27,7 @@ public class ForestExtractionZone : MonoBehaviour
             return;
         }
 
-        localPlayer = player;
+        _localPlayer = player;
 
         player.EnterDepartureZone();
 
@@ -29,9 +37,13 @@ public class ForestExtractionZone : MonoBehaviour
         );
     }
 
+    /// <summary>
+    /// I'm actually not sure why this spams EnterDepartureZone and I can't ask Josh...
+    /// </summary>
+    /// <param name="other">what is colliding with this</param>
     private void OnTriggerStay(Collider other)
     {
-        if (localPlayer != null)
+        if (_localPlayer != null)
         {
             return;
         }
@@ -45,11 +57,15 @@ public class ForestExtractionZone : MonoBehaviour
             return;
         }
 
-        localPlayer = player;
+        _localPlayer = player;
 
         player.EnterDepartureZone();
     }
 
+    /// <summary>
+    /// register that the player is no longer in the departure zone if they are what no longer touch the collider
+    /// </summary>
+    /// <param name="other">what no longer touches this</param>
     private void OnTriggerExit(Collider other)
     {
         HubDeparturePlayer player =
@@ -61,14 +77,14 @@ public class ForestExtractionZone : MonoBehaviour
             return;
         }
 
-        if (player != localPlayer)
+        if (player != _localPlayer)
         {
             return;
         }
 
         player.ExitDepartureZone();
 
-        localPlayer = null;
+        _localPlayer = null;
 
         Debug.Log(
             "PRIMARY EXTRACTION: " +
@@ -76,14 +92,17 @@ public class ForestExtractionZone : MonoBehaviour
         );
     }
 
+    /// <summary>
+    /// Makes so players are not in the departure zone if there are no more departure zone
+    /// </summary>
     private void OnDisable()
     {
-        if (localPlayer != null)
+        if (_localPlayer != null)
         {
-            localPlayer.ExitDepartureZone();
+            _localPlayer.ExitDepartureZone();
         }
 
-        localPlayer = null;
+        _localPlayer = null;
 
         InteractionTooltipUI.Instance?.Hide();
     }
