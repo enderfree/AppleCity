@@ -1,8 +1,5 @@
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEngine.Rendering.DebugUI;
 
 /// <summary>
 /// Handles the player inputs while the player is driving a trolley

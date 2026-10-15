@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Enum of apple types so we don't have to remember their name to the perfection while coding them. 
 /// </summary>

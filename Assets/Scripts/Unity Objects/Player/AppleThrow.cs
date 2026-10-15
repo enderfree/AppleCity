@@ -1,7 +1,5 @@
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// the logic needed to throw an apple

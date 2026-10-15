@@ -1,6 +1,5 @@
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// Handles if the player is pushing the trolley or not

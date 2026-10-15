@@ -8,6 +8,7 @@ public class PlayerStats : Character
 
     // event handling HP changes (mostly to warn the UI)
     public delegate void HPChanged(float newHPValue);
+    // I consider events as functions, hence this capitalization
     public static event HPChanged OnHPChanged;
 
     /// <summary>

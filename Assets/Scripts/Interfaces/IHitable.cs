@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// Interface telling the system that something should happen when its member gets hit. 
 /// </summary>

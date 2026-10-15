@@ -39,6 +39,7 @@ public class SimplePlayerAnimation : MonoBehaviour
     /// </summary>
     private void Innit()
     {
+        _animator = GetComponent<Animator>();
         _controller =
             GetComponent<CharacterController>();
 
