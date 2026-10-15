@@ -3,17 +3,30 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
+/// <summary>
+/// the default apple. Used to be called Apple, but we had 3 of those so I renamed mine and in the end, this is the one we ended up with...
+/// I didn't dare to rename it in case we still have old refs lying around that could cause a problem
+/// </summary>
 public class AppleBase: Item, IThrowable
 {
     [Header("Apple Attributes")]
+    // the pickup prompt
     [SerializeField] private GameObject _prompt;
+
     // _defaultAppleID should likely be moved to Item and changed to _defaultItemID, but Josh's inventory only tolerates apples and I don't have the time to rewrite it
     [SerializeField] private int _defaultAppleID;
+
+    // the type of apple (this class was made to be overriden by all types of apple)
     [SerializeField] private AppleTypeEnum _appleType;
+
+    // how badly does it shoo the doctor
     [SerializeField] private float _damage;
+
+    // things the apple doesn't touch
     [SerializeField] private List<LayerMask> _contactExclusionLayers;
 
-    private Rigidbody rb;
+    // the apple's rigid body
+    private Rigidbody _rb;
 
     // I don't like initializing outside of Awake, but took it from Josh and it works so I wont look further
     private readonly NetworkVariable<int> networkAppleID =
@@ -22,19 +35,38 @@ public class AppleBase: Item, IThrowable
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-    private PlayerInventory player;
-    private bool pickupRequested;
+
+    // the player's inventory
+    private PlayerInventory _player;
+
+    // if someone is trying to pickup this apple or not
+    private bool _pickupRequested;
 
     // Unity
+    /// <summary>
+    /// what happens when this apple collides with something
+    /// </summary>
+    /// <param name="collision">the thing it's colliding with</param>
     protected void OnCollisionEnter(Collision collision)
     {
         OnImpact(collision);
     }
 
     // Josh
+    /// <summary>
+    /// Initialize on Awake()
+    /// </summary>
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        Innit();
+    }
+
+    /// <summary>
+    /// get rigid body and disable the prompt
+    /// </summary>
+    private void Innit()
+    {
+        _rb = GetComponent<Rigidbody>();
 
         if (_prompt != null)
         {
@@ -42,12 +74,15 @@ public class AppleBase: Item, IThrowable
         }
     }
 
+    /// <summary>
+    /// Initialize network things
+    /// </summary>
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
-        player = null;
-        pickupRequested = false;
+        _player = null;
+        _pickupRequested = false;
 
         if (_prompt != null)
         {
@@ -55,15 +90,26 @@ public class AppleBase: Item, IThrowable
         }
     }
 
+    /// <summary>
+    /// I really was not kidding when I said that inputs were all over the place
+    /// </summary>
     private void Update()
+    {
+        CheckInputs();
+    }
+
+    /// <summary>
+    /// Handle player's attempts at picking apples
+    /// </summary>
+    private void CheckInputs()
     {
         if (!IsSpawned)
         {
             return;
         }
 
-        if (player == null ||
-            pickupRequested)
+        if (_player == null ||
+            _pickupRequested)
         {
             return;
         }
@@ -77,6 +123,9 @@ public class AppleBase: Item, IThrowable
         }
     }
 
+    /// <summary>
+    /// Make prompts always face players
+    /// </summary>
     private void UpdatePromptFacing()
     {
         if (_prompt == null ||
@@ -103,9 +152,12 @@ public class AppleBase: Item, IThrowable
         );
     }
 
+    /// <summary>
+    /// Pickup the apple
+    /// </summary>
     private void TryPickUp()
     {
-        if (player == null)
+        if (_player == null)
         {
             return;
         }
@@ -121,14 +173,14 @@ public class AppleBase: Item, IThrowable
         }
 
         bool requestSent =
-            player.PickUp(this);
+            _player.PickUp(this);
 
         if (!requestSent)
         {
             return;
         }
 
-        pickupRequested = true;
+        _pickupRequested = true;
 
         if (_prompt != null)
         {
@@ -136,6 +188,10 @@ public class AppleBase: Item, IThrowable
         }
     }
 
+    /// <summary>
+    /// I'm not following that one
+    /// </summary>
+    /// <param name="other">the thing triggering the apple</param>
     private void OnTriggerEnter(Collider other)
     {
         if (!IsSpawned)
@@ -152,8 +208,8 @@ public class AppleBase: Item, IThrowable
             return;
         }
 
-        player = inventory;
-        pickupRequested = false;
+        _player = inventory;
+        _pickupRequested = false;
 
         if (_prompt != null)
         {
@@ -161,19 +217,23 @@ public class AppleBase: Item, IThrowable
         }
     }
 
+    /// <summary>
+    /// I am still confused
+    /// </summary>
+    /// <param name="other">the thing no longer triggering the apple</param>
     private void OnTriggerExit(Collider other)
     {
         PlayerInventory inventory =
             other.GetComponentInParent<PlayerInventory>();
 
         if (inventory == null ||
-            inventory != player)
+            inventory != _player)
         {
             return;
         }
 
-        player = null;
-        pickupRequested = false;
+        _player = null;
+        _pickupRequested = false;
 
         if (_prompt != null)
         {
@@ -181,6 +241,10 @@ public class AppleBase: Item, IThrowable
         }
     }
 
+    /// <summary>
+    /// configure the apple on the server
+    /// </summary>
+    /// <param name="newAppleID">server id for the apple</param>
     public void ConfigureServer(int newAppleID)
     {
         /*
@@ -202,12 +266,15 @@ public class AppleBase: Item, IThrowable
         networkAppleID.Value = newAppleID;
     }
 
+    /// <summary>
+    /// handles the dispawning of apples
+    /// </summary>
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
 
-        player = null;
-        pickupRequested = false;
+        _player = null;
+        _pickupRequested = false;
 
         if (_prompt != null)
         {
@@ -216,17 +283,25 @@ public class AppleBase: Item, IThrowable
     }
 
     // Functions
+    /// <summary>
+    /// The thrown mechanic was supposed to be handled in the apple, but due to time constraints, it is currently in player
+    /// This would have let us do apples that are thrown weird
+    /// </summary>
     public virtual void ThrowItem()
     {
         // todo
     }
 
+    /// <summary>
+    /// What happens when the âpple gets hit
+    /// </summary>
+    /// <param name="collision">what hit the apple</param>
     public virtual void OnImpact(Collision collision)
     {
         if (_contactExclusionLayers.Contains(LayerMask.GetMask(LayerMask.LayerToName(collision.gameObject.layer))))
         {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
         }
         else
         {
@@ -240,6 +315,9 @@ public class AppleBase: Item, IThrowable
     }
 
     // Getters and Setters
+    /// <summary>
+    /// Handles the apple id
+    /// </summary>
     public virtual int AppleID
     {
         get
@@ -248,6 +326,9 @@ public class AppleBase: Item, IThrowable
         }
     }
 
+    /// <summary>
+    /// just settuping my observers in case I need them later
+    /// </summary>
     public virtual AppleTypeEnum AppleType
     {
         get
