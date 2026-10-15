@@ -18,7 +18,7 @@ public class Enemy_Animation : MonoBehaviour
     private float _speed;
 
     // I'm not sure, apparently Jun took it from Josh and he is not sure either
-    private float _speedDeltaTimeMultiplier = 1f;
+    private float _speedDeltaTimeMultiplier = 3f;
 
     // the last position where the enemy was
     private Vector3 _lastPosition;
