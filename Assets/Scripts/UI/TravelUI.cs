@@ -3,14 +3,26 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Class managing the GUI elements during the ready and scene change
+/// </summary>
 public class TravelUI : MonoBehaviour
 {
+    /// <summary>
+    /// static reference to this manager
+    /// </summary>
     public static TravelUI Instance { get; private set; }
 
     [Header("UI References")]
-    [SerializeField] private TMP_Text statusText;
-    [SerializeField] private TMP_Text transitionText;
+    // the text related to the state currently ongoing
+    [SerializeField] private TMP_Text _statusText;
 
+    // the text shown right before the scene change
+    [SerializeField] private TMP_Text _transitionText;
+
+    /// <summary>
+    /// So far I've been moving this on innit, but this time there is an awake and a start so I don't really dare
+    /// </summary>
     private void Awake()
     {
         if (Instance != null &&
@@ -28,20 +40,29 @@ public class TravelUI : MonoBehaviour
             OnActiveSceneChanged;
     }
 
+    /// <summary>
+    /// So far I've been moving this on innit, but this time there is an awake and a start so I don't really dare
+    /// </summary>
     private void Start()
     {
         ClearStatus();
         HideTransition();
     }
 
+    /// <summary>
+    /// Monobehavior's Update()
+    /// </summary>
     private void Update()
     {
         UpdateReadyStatus();
     }
 
+    /// <summary>
+    /// tries to keep things ready for the travel
+    /// </summary>
     private void UpdateReadyStatus()
     {
-        if (statusText == null)
+        if (_statusText == null)
         {
             return;
         }
@@ -86,11 +107,15 @@ public class TravelUI : MonoBehaviour
             return;
         }
 
-        statusText.text =
+        _statusText.text =
             $"Players Ready: {ready}/{connected}\n" +
             $"You: {GetLocalReadyState()}";
     }
 
+    /// <summary>
+    /// Get if this client is ready or not
+    /// </summary>
+    /// <returns>a ready state</returns>
     private string GetLocalReadyState()
     {
         NetworkManager networkManager =
@@ -117,38 +142,53 @@ public class TravelUI : MonoBehaviour
             : "NOT READY";
     }
 
+    /// <summary>
+    /// handles the transition
+    /// </summary>
+    /// <param name="message">transition message to be displayed</param>
     public void ShowTransition(string message)
     {
-        if (transitionText == null)
+        if (_transitionText == null)
         {
             return;
         }
 
-        transitionText.text = message;
-        transitionText.gameObject.SetActive(true);
+        _transitionText.text = message;
+        _transitionText.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Hide the transition once it's over
+    /// </summary>
     public void HideTransition()
     {
-        if (transitionText == null)
+        if (_transitionText == null)
         {
             return;
         }
 
-        transitionText.text = string.Empty;
-        transitionText.gameObject.SetActive(false);
+        _transitionText.text = string.Empty;
+        _transitionText.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// reset status text
+    /// </summary>
     private void ClearStatus()
     {
-        if (statusText == null)
+        if (_statusText == null)
         {
             return;
         }
 
-        statusText.text = string.Empty;
+        _statusText.text = string.Empty;
     }
 
+    /// <summary>
+    /// Clear status when scene is changed
+    /// </summary>
+    /// <param name="previousScene">the scene before the change</param>
+    /// <param name="newScene">the scene you are going to</param>
     private void OnActiveSceneChanged(
         Scene previousScene,
         Scene newScene)
@@ -170,6 +210,9 @@ public class TravelUI : MonoBehaviour
         );
     }
 
+    /// <summary>
+    /// Unsubscribe on OnDestroy()
+    /// </summary>
     private void OnDestroy()
     {
         SceneManager.activeSceneChanged -=

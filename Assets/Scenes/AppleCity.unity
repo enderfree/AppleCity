@@ -603,7 +603,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkSceneChanger
   ShowTopMostFoldoutHeaderGroup: 1
-  destinationScene: AppleForest
+  _destinationScene: AppleForest
 --- !u!4 &173295219
 Transform:
   m_ObjectHideFlags: 0
@@ -632,19 +632,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HubDepartureManager
   ShowTopMostFoldoutHeaderGroup: 1
-  sceneChanger: {fileID: 173295218}
-  departureDelay: 3
-  ReadyPlayers:
+  _sceneChanger: {fileID: 0}
+  _departureDelay: 3
+  _readyPlayers:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
-  ConnectedPlayers:
+  _connectedPlayers:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
-  DepartureCountdownActive:
+  _departureCountdownActive:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
@@ -1501,31 +1501,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eddff78ab19818247a0029b9177e3770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fontSize: 24
-  ready_uiPosition_x: 1140
-  ready_uiPosition_y: 10
-  ready_uiWidth: 200
-  ready_uiHeight: 30
-  joined_uiPosition_x: 1680
-  joined_uiPosition_y: 10
-  joined_uiWidth: 500
-  joined_uiHeight: 50
+  _fontSize: 20
+  _ready_uiPosition_x: 10
+  _ready_uiPosition_y: 10
+  _ready_uiWidth: 200
+  _ready_uiHeight: 30
+  _joined_uiPosition_x: 10
+  _joined_uiPosition_y: 10
+  _joined_uiWidth: 200
+  _joined_uiHeight: 30
   _uiPosition_x: 880
   _uiPosition_y: 400
   _uiWidth: 220
   _uiHeight: 80
-  host_uiPosition_x: 0
-  host_uiPosition_y: 0
-  host_uiWidth: 0
-  host_uiHeight: 0
-  code_uiPosition_x: 0
-  code_uiPosition_y: 100
-  code_uiWidth: 0
-  code_uiHeight: 0
-  join_uiPosition_x: 0
-  join_uiPosition_y: 200
-  join_uiWidth: 0
-  join_uiHeight: 0
+  _host_uiPosition_x: 10
+  _host_uiPosition_y: 0
+  _host_uiWidth: 120
+  _host_uiHeight: 40
+  _code_uiPosition_x: 10
+  _code_uiPosition_y: 140
+  _code_uiWidth: 120
+  _code_uiHeight: 30
+  _join_uiPosition_x: 10
+  _join_uiPosition_y: 280
+  _join_uiWidth: 120
+  _join_uiHeight: 40
 --- !u!1 &384205460
 GameObject:
   m_ObjectHideFlags: 0
@@ -5677,8 +5677,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc33d3b67707d0b46a258bbe151ca8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverAddress: 143.110.220.108
-  serverPort: 7777
+  _serverAddress: 127.0.0.1
+  _serverPort: 7777
 --- !u!1 &1341957459
 GameObject:
   m_ObjectHideFlags: 0
@@ -7871,8 +7871,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df41094fe1221c4da118bee19f5fdb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScenePlayerSpawner
-  spawnPoint: {fileID: 544233412}
-  spawnHeightOffset: 0.5
+  _spawnPoint: {fileID: 0}
+  _spawnHeightOffset: 0.5
 --- !u!4 &1844726843
 Transform:
   m_ObjectHideFlags: 0
@@ -8616,7 +8616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a77901c2f31ff314a897a9733d2b491d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverPort: 7777
+  _serverPort: 7777
 --- !u!1 &2003124655
 GameObject:
   m_ObjectHideFlags: 0
