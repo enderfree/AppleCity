@@ -3,6 +3,9 @@ using Unity.Netcode;
 using UnityEngine;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Detection logic of the enemy when searching
+/// </summary>
 public class EnemySearchDetection : NetworkBehaviour
 {
     // how long is this active

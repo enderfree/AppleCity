@@ -2,19 +2,34 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Detection logic of the enemy when not searching
+/// </summary>
 public class EnemyViewDetection : NetworkBehaviour
 {
+    // list of players
     [SerializeField] private List<GameObject> _getPlayerList = new List<GameObject>();
+
+    // detection layer
     [SerializeField] private LayerMask _hitLayer;
+
+    // enemy head
     [SerializeField] private GameObject _head;
+
+    // if the enemy sees the player
     [SerializeField] private NetworkVariable<bool> _seePlayer = new NetworkVariable<bool>(false);
+
+    // if the agent saw the player
     public bool _readSawPlayer => _seePlayer.Value;
 
     //ref
+    // the enemy logic
     [SerializeField] private EnemyBehavior _behaviour;
 
-
-
+    /// <summary>
+    /// what happens on trigger
+    /// </summary>
+    /// <param name="col">the collision object triggering</param>
     private void OnTriggerEnter(Collider col)
     {
         if (!IsServer) return;
@@ -22,6 +37,10 @@ public class EnemyViewDetection : NetworkBehaviour
         GetPlayerToList(col);
     }
 
+    /// <summary>
+    /// what happens when no longer triggering
+    /// </summary>
+    /// <param name="col">the collision object no longer triggering</param>
     private void OnTriggerExit(Collider col)
     {
         if (!IsServer) return;
@@ -30,7 +49,10 @@ public class EnemyViewDetection : NetworkBehaviour
     }
 
     
-
+    /// <summary>
+    /// detect players when they are triggering you
+    /// </summary>
+    /// <param name="col">the collision triggering you</param>
     private void OnTriggerStay(Collider col)
     {
         if (!IsServer) return;
@@ -38,6 +60,9 @@ public class EnemyViewDetection : NetworkBehaviour
         DetectPlayer();
     }
 
+    /// <summary>
+    /// player detection logic
+    /// </summary>
     public void DetectPlayer()
     {
         if (_seePlayer.Value) return;
@@ -75,6 +100,10 @@ public class EnemyViewDetection : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// add new players to list
+    /// </summary>
+    /// <param name="col">collision object</param>
     private void GetPlayerToList(Collider col)
     {
         if (col.gameObject.CompareTag("Player"))
@@ -88,6 +117,11 @@ public class EnemyViewDetection : NetworkBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// remove player from list
+    /// </summary>
+    /// <param name="col">collision object</param>
     private void RemovePlayerToList(Collider col)
     {
         _seePlayer.Value = false;
