@@ -1,13 +1,23 @@
 using UnityEngine;
 
+/// <summary>
+/// This is where te server spawns apples
+/// </summary>
 public class AppleSpawnPoint : MonoBehaviour
 {
     [Header("Apple")]
+    // I have no idea why we have an apple id here
     [SerializeField]
-    private int appleID = 1;
+    private int _appleID = 1;
 
-    public int AppleID => appleID;
+    /// <summary>
+    /// Original getter?
+    /// </summary>
+    public int AppleID => _appleID;
 
+    /// <summary>
+    /// Show the spawn point in the editor
+    /// </summary>
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(
