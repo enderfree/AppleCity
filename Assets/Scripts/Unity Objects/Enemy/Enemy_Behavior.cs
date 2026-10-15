@@ -41,7 +41,7 @@ public class EnemyBehavior : NPC
     // short transition time
     [SerializeField] private float _idleTimeShort = 2f;
 
-    //Random point and compare currentposition to designated position to decide whenever it should go Idle or choose a new point
+    // Random point and compare currentposition to designated position to decide whenever it should go Idle or choose a new point
     [SerializeField] private float _searchMinRadius = 30f,_searchMaxRadius = 200f ;
 
     // last known position

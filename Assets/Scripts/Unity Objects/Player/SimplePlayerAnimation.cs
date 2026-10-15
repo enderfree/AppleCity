@@ -1,34 +1,70 @@
 using UnityEngine;
 
+/// <summary>
+/// This class handles player animations
+/// </summary>
 public class SimplePlayerAnimation : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
+    // player animator
+    [SerializeField] private Animator _animator;
 
-    private CharacterController controller;
-    private SimplePlayerMovement playerMovement;
-    private float speed;
-    private bool isJump;
-    [SerializeField] private float speedDeltaTimeMultiplier = 1f;
+    // player character controller
+    private CharacterController _controller;
 
-    private Vector3 lastPosition;
+    // the class that handles movements
+    private SimplePlayerMovement _playerMovement;
 
+    // character speed
+    private float _speed;
+
+    // if the character is jumping
+    private bool _isJump;
+
+    // not sure, was made by Josh and while Jun uses them, our understanding of this field is vague
+    [SerializeField] private float _speedDeltaTimeMultiplier = 1f;
+
+    // where the player last was
+    private Vector3 _lastPosition;
+
+    /// <summary>
+    /// Initialize on Start()
+    /// </summary>
     private void Start()
     {
-        controller =
+        Innit();
+    }
+
+    /// <summary>
+    /// Initialize a few variables
+    /// </summary>
+    private void Innit()
+    {
+        _controller =
             GetComponent<CharacterController>();
 
-        playerMovement =
+        _playerMovement =
             GetComponent<SimplePlayerMovement>();
 
-        lastPosition =
+        _lastPosition =
             transform.position;
     }
 
+    /// <summary>
+    /// Handle animations on LateUpdate
+    /// </summary>
     private void LateUpdate()
+    {
+        HandleAnimation();
+    }
+
+    /// <summary>
+    /// Handles the animations
+    /// </summary>
+    private void HandleAnimation()
     {
         Vector3 movement =
             transform.position -
-            lastPosition;
+            _lastPosition;
 
         Vector3 horizontalMovement =
             new Vector3(
@@ -37,7 +73,7 @@ public class SimplePlayerAnimation : MonoBehaviour
                 movement.z
             );
 
-        speed = Mathf.MoveTowards(speed, horizontalMovement.magnitude/Time.deltaTime, Time.deltaTime* speedDeltaTimeMultiplier);
+        _speed = Mathf.MoveTowards(_speed, horizontalMovement.magnitude / Time.deltaTime, Time.deltaTime * _speedDeltaTimeMultiplier);
 
 
         float verticalSpeed =
@@ -55,62 +91,62 @@ public class SimplePlayerAnimation : MonoBehaviour
                 );
         }
 
-        animator.SetFloat(
+        _animator.SetFloat(
             "Speed",
-            speed
+            _speed
         );
 
-        animator.SetFloat(
+        _animator.SetFloat(
             "VerticalSpeed",
             verticalSpeed
         );
 
-        animator.SetFloat(
+        _animator.SetFloat(
             "MoveX",
             localMovement.x,
             0.1f,
             Time.deltaTime
         );
 
-        animator.SetFloat(
+        _animator.SetFloat(
             "MoveY",
             localMovement.z,
             0.1f,
             Time.deltaTime
         );
 
-        animator.SetBool(
+        _animator.SetBool(
             "IsGrounded",
-            controller.isGrounded
+            _controller.isGrounded
         );
 
-        animator.SetBool(
+        _animator.SetBool(
             "IsCrouching",
-            playerMovement.IsCrouching.Value
+            _playerMovement.IsCrouching.Value
         );
 
-        animator.SetBool(
+        _animator.SetBool(
             "IsSliding",
-            playerMovement.IsSliding.Value
+            _playerMovement.IsSliding.Value
         );
 
-        animator.SetBool(
+        _animator.SetBool(
             "IsTargeting",
-            playerMovement.IsTargeting.Value
+            _playerMovement.IsTargeting.Value
         );
 
-        lastPosition =
+        _lastPosition =
             transform.position;
 
-        if (!isJump && verticalSpeed >= 0.1 && !controller.isGrounded)
+        if (!_isJump && verticalSpeed >= 0.1 && !_controller.isGrounded)
         {
-          //  animator.SetTrigger("Jump");
-            isJump = true;
+            //  animator.SetTrigger("Jump");
+            _isJump = true;
         }
 
-        if (controller.isGrounded)
-        { 
-         isJump = false;
+        if (_controller.isGrounded)
+        {
+            _isJump = false;
         }
     }
 }
