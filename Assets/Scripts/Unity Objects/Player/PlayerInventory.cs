@@ -2,12 +2,23 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Joshua's inventory code. I made it work, but I don't think others did so we're just using an apple list in the end. 
+/// There are a lot of things to fix in there too, but it was working with my patches, we just didn't have time to teach it's quirks to everyone. 
+/// </summary>
 public class PlayerInventory : NetworkBehaviour
 {
-    private readonly List<int> apples = new List<int>();
+    // technically, this is the inventory, it holds the apple IDs used by the server
+    private readonly List<int> _apples = new List<int>();
 
-    public int AppleCount => apples.Count;
+    // I'm not sure why he has an accessor for that, but I saw this in other's code too
+    public int AppleCount => _apples.Count;
 
+    /// <summary>
+    ///Get if the player trying to pick up an apple is allowed to
+    /// </summary>
+    /// <param name="apple">the apple being picked up</param>
+    /// <returns> If the player trying to pick up an apple is allowed to</returns>
     public bool PickUp(AppleBase apple)
     {
         if (!IsOwner)
@@ -71,6 +82,10 @@ public class PlayerInventory : NetworkBehaviour
         return true;
     }
 
+    /// <summary>
+    /// If the apple can be picked up, make sure the server aggrees
+    /// </summary>
+    /// <param name="appleReference">a network reference to the apple</param>
     [Rpc(SendTo.Server)]
     private void PickUpAppleRpc(
         NetworkObjectReference appleReference)
@@ -135,15 +150,19 @@ public class PlayerInventory : NetworkBehaviour
         appleNetworkObject.Despawn();
     }
 
+    /// <summary>
+    /// Confirm the apple was properly picked up through the server
+    /// </summary>
+    /// <param name="appleID">the id of the picked apple</param>
     [Rpc(SendTo.Owner)]
     private void ConfirmApplePickupRpc(int appleID)
     {
-        apples.Add(appleID);
+        _apples.Add(appleID);
 
         Debug.Log(
             $"Apple collected successfully! " +
             $"Apple ID: {appleID} | " +
-            $"Apples: {apples.Count}"
+            $"Apples: {_apples.Count}"
         );
     }
 }
