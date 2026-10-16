@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimplePlayerAnimation
   _animator: {fileID: 5666068405453505484}
-  _speedDeltaTimeMultiplier: 1
+  _speedDeltaTimeMultiplier: 16
 --- !u!114 &6414669962989271884
 MonoBehaviour:
   m_ObjectHideFlags: 0
