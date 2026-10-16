@@ -20,7 +20,7 @@ public class SimplePlayerAnimation : MonoBehaviour
     // if the character is jumping
     private bool _isJump;
 
-    // not sure, was made by Josh and while Jun uses them, our understanding of this field is vague
+    // Adjusting the speed of in-between Locomotion transitions
     [SerializeField] private float _speedDeltaTimeMultiplier = 1f;
 
     // where the player last was
