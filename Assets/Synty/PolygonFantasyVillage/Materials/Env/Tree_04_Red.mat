@@ -29,13 +29,12 @@ Material:
   - _BUILTIN_ALPHATEST_ON
   - _BUILTIN_AlphaClip
   m_InvalidKeywords:
-  - _ALPHABLEND_ON
+  - _GLOSSYREFLECTIONS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: TransparentCutout
+  stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -198,6 +197,7 @@ Material:
     - _Light_Wind_Y_Offset: 0
     - _Light_Wind_Y_Strength: 1
     - _Metallic: 0
+    - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _Pulse_Speed: 0
@@ -218,6 +218,7 @@ Material:
     - _Trunk_Metallic: 0
     - _Trunk_Normal_Strength: 0.5
     - _Trunk_Smoothness: 0.2
+    - _UVSec: 0
     - _Use_Color_Noise: 1
     - _Use_Global_Weather_Controller: 0
     - _Use_Vertex_Color_Wind: 1
