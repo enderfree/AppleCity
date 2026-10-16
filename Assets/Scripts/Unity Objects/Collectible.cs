@@ -28,7 +28,7 @@ public class Collectible : MonoBehaviour
     /// Show note when player is in trigger range
     /// </summary>
     /// <param name="other">collider triggering</param>
-    private void OnTriggerEnter(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
@@ -40,7 +40,7 @@ public class Collectible : MonoBehaviour
     /// Stop showing when player leaves trigger zone
     /// </summary>
     /// <param name="other">collider no longer triggering</param>
-    private void OnTriggerExit(Collider2D other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
