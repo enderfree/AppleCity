@@ -130,7 +130,7 @@ public class EnemyBehavior : NPC
     private async void BehaviourLogic()
     {
         // Bear see you
-        if (_seePlayer && NPCState == NPCStateEnum.Active || NPCState == NPCStateEnum.Idle)
+        if (_seePlayer && (NPCState == NPCStateEnum.Active || NPCState == NPCStateEnum.Idle))
         {
             if (NPCState == NPCStateEnum.Attacking) return;
             await Delay(1f);
@@ -138,16 +138,15 @@ public class EnemyBehavior : NPC
         }
 
         //Bear is angry at you
-        if (NPCState == NPCStateEnum.Aggressive)
+        else if (NPCState == NPCStateEnum.Aggressive && Agent.isActiveAndEnabled)
         {
-            if (Agent.isActiveAndEnabled)
                   ChaseTarget();
         }
 
         //Bear just chill around
-        else if (NPCState == NPCStateEnum.Active)
+        else if (NPCState == NPCStateEnum.Active &&  (Agent.isActiveAndEnabled))
         {
-            if(Agent.isActiveAndEnabled)
+            
                 CheckPatrolProgress();
 
             _stateActiveTime = Countdown(_stateActiveTime);
@@ -192,12 +191,9 @@ public class EnemyBehavior : NPC
         Agent.stoppingDistance = _idleStopDis;
         _stateActiveTime = _stateActiveTimeLimit;
         Agent.angularSpeed = _normalAngularSpeed;
-        StopNavAgent();
-
+        
         //Bear rest time
         await Delay(idleTime);
-
-        RestartNavAgent();
         
         //Bear saw no one, start walking around
         if (!_seePlayer || _targetPlayers.Count == 0)
