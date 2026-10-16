@@ -509,7 +509,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySearchDetection
   ShowTopMostFoldoutHeaderGroup: 1
-  _thisDetection: {fileID: 4717961839895457432}
   _activeTime: 1
   _getPlayerList: []
   _hitLayer:
@@ -890,7 +889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 15598195
+  GlobalObjectIdHash: 1938047269
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1942,9 +1941,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4205583395519646361}
+    - targetCorrespondingSourceObject: {fileID: 100094, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8433448295712622397}
     - targetCorrespondingSourceObject: {fileID: 100096, guid: bd230207ae5490e448055f036d3af422, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4798291021622811580}
+    - targetCorrespondingSourceObject: {fileID: 100098, guid: bd230207ae5490e448055f036d3af422, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5075788389176539264}
   m_SourcePrefab: {fileID: 100100000, guid: bd230207ae5490e448055f036d3af422, type: 3}
 --- !u!95 &8377550178040677944 stripped
 Animator:
@@ -1963,6 +1968,58 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8377550178050208856}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 3857
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.20000112, y: 0.27245083, z: 0.44231302}
+  m_Center: {x: -0.00000039736432, y: -0.061632283, z: 0.18505682}
+--- !u!1 &8377550178050208858 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100098, guid: bd230207ae5490e448055f036d3af422, type: 3}
+  m_PrefabInstance: {fileID: 8377550178050175832}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &5075788389176539264
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8377550178050208858}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 3857
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.20000112, y: 0.27245083, z: 0.44231302}
+  m_Center: {x: -0.00000039736432, y: -0.061632283, z: 0.18505682}
+--- !u!1 &8377550178050209190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100094, guid: bd230207ae5490e448055f036d3af422, type: 3}
+  m_PrefabInstance: {fileID: 8377550178050175832}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &8433448295712622397
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8377550178050209190}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -2020,7 +2077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2143632998
+  GlobalObjectIdHash: 295554420
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
