@@ -8,12 +8,27 @@ public class Collectible : MonoBehaviour
 {
     [SerializeField] private GameObject _noteUI;
 
+    /// <summary>
+    /// Innit on Start()
+    /// </summary>
     private void Start()
+    {
+        Innit();
+    }
+
+    /// <summary>
+    /// Innitialize default state
+    /// </summary>
+    private void Innit()
     {
         _noteUI.SetActive(false);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    /// <summary>
+    /// Show note when player is in trigger range
+    /// </summary>
+    /// <param name="other">collider triggering</param>
+    private void OnTriggerEnter(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
@@ -21,7 +36,11 @@ public class Collectible : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    /// <summary>
+    /// Stop showing when player leaves trigger zone
+    /// </summary>
+    /// <param name="other">collider no longer triggering</param>
+    private void OnTriggerExit(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
